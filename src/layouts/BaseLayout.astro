@@ -1,0 +1,77 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { htmlLang, localizePath, otherLang, pick, type Lang } from '../i18n/utils';
+import { profile } from '../data/profile';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  /** OG 图片的绝对或站内路径 */
+  image?: string;
+  /** 另一种语言对应页面的路径；null 表示没有翻译（切换时回到该语言首页） */
+  alternate?: string | null;
+  type?: 'website' | 'article';
+}
+
+const { lang, title, image = '/og-default.png', type = 'website' } = Astro.props;
+const name = pick(profile.name, lang);
+const tagline = pick(profile.tagline, lang);
+const description = Astro.props.description ?? (tagline || name);
+const other = otherLang(lang);
+const alternate =
+  Astro.props.alternate === undefined ? localizePath(Astro.url.pathname, other) : Astro.props.alternate;
+const fullTitle = title ? `${title} · ${name}` : tagline ? `${name} · ${tagline}` : name;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+
+const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC;
+const umamiId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID;
+const enableAnalytics = import.meta.env.PROD && umamiSrc && umamiId;
+---
+
+<!doctype html>
+<html lang={htmlLang[lang]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${name} RSS`} href={localizePath('/rss.xml', lang)} />
+    {alternate && <link rel="alternate" hreflang={htmlLang[other]} href={new URL(alternate, Astro.site)} />}
+    <link rel="alternate" hreflang={htmlLang[lang]} href={canonical} />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={htmlLang[lang]} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script is:inline>
+      // 在页面渲染前设置主题，避免闪烁；默认用纸张风格的亮色主题，只有手动切换过才用暗色
+      (() => {
+        let theme = null;
+        try { theme = localStorage.getItem('theme'); } catch {}
+        const dark = theme === 'dark';
+        document.documentElement.classList.toggle('dark', dark);
+      })();
+    </script>
+    {enableAnalytics && <script is:inline defer src={umamiSrc} data-website-id={umamiId} />}
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2 dark:focus:bg-neutral-900">
+      {lang === 'zh' ? '跳到正文' : 'Skip to content'}
+    </a>
+    <Header lang={lang} alternate={alternate ?? localizePath('/', other)} />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

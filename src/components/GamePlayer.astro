@@ -1,0 +1,82 @@
+---
+import Icon from './Icon.astro';
+import WorkCover from './WorkCover.astro';
+import { t, type Lang } from '../i18n/utils';
+import { playUrl, slugOf, type Work } from '../lib/content';
+
+interface Props {
+  work: Work;
+  lang: Lang;
+}
+const { work, lang } = Astro.props;
+const { title, play, trailer } = work.data;
+const url = playUrl(work);
+const slug = slugOf(work);
+const youtubeId = trailer?.match(/(?:youtu\.be\/|v=)([\w-]{11})/)?.[1];
+---
+
+{
+  play.type === 'webgl' ? (
+    <div data-game-player={url} data-embed={String(play.embed)} class="relative overflow-hidden rounded-xl bg-neutral-900 ring-1 ring-neutral-200 dark:ring-neutral-800" style={{ aspectRatio: play.aspectRatio }}>
+      <div class="absolute inset-0 opacity-60">
+        <WorkCover work={work} loading="eager" widths={[640, 960, 1280]} sizes="(min-width: 1024px) 960px, 100vw" textClass="text-4xl" />
+      </div>
+      <div data-player-overlay class="absolute inset-0 flex flex-col items-center justify-end gap-4 bg-gradient-to-t from-black/70 via-transparent to-transparent p-6 text-white sm:pb-10">
+        <div class="flex flex-wrap justify-center gap-3">
+          {play.embed && (
+            <button type="button" data-player-start data-umami-event="play-game" data-umami-event-slug={slug} class="inline-flex items-center gap-2 rounded-lg bg-accent-600 px-5 py-2.5 font-medium shadow-lg hover:bg-accent-500">
+              <Icon name="play" class="size-5" />
+              {t(lang, 'player.start')}
+            </button>
+          )}
+          <a href={url} target="_blank" rel="noopener" data-umami-event="play-game-fullscreen" data-umami-event-slug={slug} class="inline-flex items-center gap-2 rounded-lg bg-white/15 px-5 py-2.5 font-medium backdrop-blur hover:bg-white/25">
+            <Icon name="expand" class="size-5" />
+            {t(lang, 'player.fullscreen')}
+          </a>
+        </div>
+        <p class="text-sm text-white/80 sm:hidden">{t(lang, 'player.mobileHint')}</p>
+      </div>
+      <template data-player-template>
+        <iframe src={url} title={title} class="absolute inset-0 size-full border-0" allow="fullscreen; autoplay; gamepad" allowfullscreen />
+      </template>
+    </div>
+  ) : youtubeId ? (
+    <div data-youtube={youtubeId} class="relative aspect-video overflow-hidden rounded-xl bg-neutral-900">
+      <div class="absolute inset-0 opacity-70">
+        <WorkCover work={work} loading="eager" widths={[640, 960, 1280]} sizes="(min-width: 1024px) 960px, 100vw" textClass="text-4xl" />
+      </div>
+      <button type="button" data-youtube-start class="absolute inset-0 flex items-center justify-center" aria-label={t(lang, 'player.trailer')}>
+        <span class="flex size-16 items-center justify-center rounded-full bg-neutral-900 text-white shadow-lg ring-2 ring-white">
+          <Icon name="play" class="size-7" />
+        </span>
+      </button>
+    </div>
+  ) : trailer ? (
+    <video src={trailer} controls preload="none" class="aspect-video w-full rounded-xl bg-black" />
+  ) : (
+    <div class="relative overflow-hidden rounded-xl ring-1 ring-neutral-200 dark:ring-neutral-800">
+      <div class="aspect-video">
+        <WorkCover work={work} loading="eager" widths={[640, 960, 1280]} sizes="(min-width: 1024px) 960px, 100vw" textClass="text-4xl" />
+      </div>
+      {play.type === 'external' && <p class="absolute inset-x-0 bottom-0 bg-black/60 px-4 py-2 text-sm text-white">{t(lang, 'player.external')}</p>}
+    </div>
+  )
+}
+
+<script>
+  // 点击后才插入 iframe，避免打开详情页就下载整个游戏
+  for (const player of document.querySelectorAll<HTMLElement>('[data-game-player]')) {
+    player.querySelector('[data-player-start]')?.addEventListener('click', () => {
+      const template = player.querySelector<HTMLTemplateElement>('[data-player-template]');
+      if (!template) return;
+      player.append(template.content.cloneNode(true));
+      player.querySelector('[data-player-overlay]')?.remove();
+      player.querySelector('iframe')?.focus();
+    });
+  }
+  for (const box of document.querySelectorAll<HTMLElement>('[data-youtube]')) {
+    box.querySelector('[data-youtube-start]')?.addEventListener('click', () => {
+      box.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${box.dataset.youtube}?autoplay=1" class="absolute inset-0 size-full border-0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
+    });
+  }
+</script>

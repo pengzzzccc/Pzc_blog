@@ -1,0 +1,42 @@
+---
+import { Image } from 'astro:assets';
+import type { LibraryEntry } from '../lib/library';
+
+interface Props {
+  entry: LibraryEntry;
+  class?: string;
+}
+const { entry, class: className = '' } = Astro.props;
+const isRemote = typeof entry.cover === 'string';
+---
+
+{
+  isRemote ? (
+    <img
+      src={entry.cover as string}
+      data-fallback={entry.coverFallback}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      referrerpolicy="no-referrer"
+      class:list={['library-cover size-full object-cover', className]}
+    />
+  ) : (
+    <Image src={entry.cover as ImageMetadata} alt="" widths={[200, 300, 400]} sizes="200px" class:list={['size-full object-cover', className]} />
+  )
+}
+
+<script>
+  // Steam 竖版封面不存在时，退回横版 header 图
+  for (const img of document.querySelectorAll<HTMLImageElement>('img.library-cover[data-fallback]')) {
+    const useFallback = () => {
+      const fallback = img.dataset.fallback;
+      if (fallback && img.src !== fallback) {
+        img.src = fallback;
+        img.classList.add('object-left');
+      }
+    };
+    if (img.complete && img.naturalWidth === 0) useFallback();
+    img.addEventListener('error', useFallback, { once: true });
+  }
+</script>

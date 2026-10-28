@@ -1,0 +1,70 @@
+{
+	admin off
+}
+
+{$SITE_DOMAIN} {
+	# 预压缩的游戏文件（Unity *.br / *.gz）不能再压缩一次
+	@compressible not path *.br *.gz
+	encode @compressible zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+
+	# 作品 Web 构建，来自只读挂载的 games 卷
+	handle_path /play/* {
+		root * /srv/games
+
+		# Unity WebGL（Brotli）
+		@br path *.br
+		header @br Content-Encoding br
+		@wasmBr path *.wasm.br
+		header @wasmBr Content-Type application/wasm
+		@jsBr path *.js.br
+		header @jsBr Content-Type application/javascript
+		@dataBr path *.data.br
+		header @dataBr Content-Type application/octet-stream
+
+		# Unity WebGL（Gzip）
+		@gz path *.gz
+		header @gz Content-Encoding gzip
+		@wasmGz path *.wasm.gz
+		header @wasmGz Content-Type application/wasm
+		@jsGz path *.js.gz
+		header @jsGz Content-Type application/javascript
+		@dataGz path *.data.gz
+		header @dataGz Content-Type application/octet-stream
+
+		# Godot 4 多线程导出需要跨源隔离；只加在 /play/* 上，不影响站点其他页面
+		header Cross-Origin-Opener-Policy same-origin
+		header Cross-Origin-Embedder-Policy require-corp
+		header Cache-Control "public, max-age=3600"
+
+		file_server
+	}
+
+	handle {
+		root * /srv/site
+		@hashed path /_astro/*
+		header @hashed Cache-Control "public, max-age=31536000, immutable"
+		@pages not path /_astro/*
+		header @pages Cache-Control "no-cache"
+		file_server
+	}
+
+	handle_errors 404 {
+		root * /srv/site
+		@en path /en /en/*
+		rewrite @en /en/404/index.html
+		rewrite * /404.html
+		file_server
+	}
+}
+
+{$ANALYTICS_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy umami:3000
+}

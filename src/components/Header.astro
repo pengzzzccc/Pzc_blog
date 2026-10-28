@@ -1,0 +1,76 @@
+---
+import Icon from './Icon.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { profile } from '../data/profile';
+import { localizePath, pick, stripLang, t, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  /** 语言切换按钮跳转的地址 */
+  alternate: string;
+}
+const { lang, alternate } = Astro.props;
+const current = stripLang(Astro.url.pathname);
+const nav = [
+  { href: '/games/', label: t(lang, 'nav.works') },
+  { href: '/blog/', label: t(lang, 'nav.blog') },
+  { href: '/library/', label: t(lang, 'nav.library') },
+];
+const isActive = (href: string) => current.startsWith(href.replace(/\/$/, ''));
+---
+
+<header class="sticky top-0 z-40 border-b border-neutral-400/40 bg-paper/85 backdrop-blur dark:border-neutral-800/70 dark:bg-paper-dark/85">
+  <div class="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4 sm:px-6">
+    <a href={localizePath('/', lang)} class="flex items-center gap-2 font-semibold tracking-tight">
+      <img src={profile.avatar} alt="" width="28" height="28" class="size-7 rounded-full" />
+      <span>{pick(profile.name, lang)}</span>
+    </a>
+
+    <nav class="ml-auto hidden items-center gap-1 sm:flex" aria-label="Main">
+      {
+        nav.map((item) => (
+          <a
+            href={localizePath(item.href, lang)}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+            class="rounded-md px-3 py-1.5 text-sm text-neutral-700 transition hover:bg-neutral-100 hover:text-neutral-900 aria-[current=page]:font-medium aria-[current=page]:text-accent-600 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 dark:aria-[current=page]:text-neutral-100"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="ml-auto flex items-center gap-1 sm:ml-2">
+      <a
+        href={alternate}
+        hreflang={lang === 'zh' ? 'en' : 'zh-CN'}
+        class="rounded-md px-2.5 py-1.5 text-sm text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+      >
+        {t(lang, 'lang.switch')}
+      </a>
+      <ThemeToggle label={t(lang, 'theme.toggle')} />
+
+      <details class="relative sm:hidden">
+        <summary
+          class="flex cursor-pointer list-none items-center rounded-md p-2 text-neutral-700 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 [&::-webkit-details-marker]:hidden"
+          aria-label={t(lang, 'nav.menu')}
+        >
+          <Icon name="menu" />
+        </summary>
+        <nav class="absolute right-0 mt-2 w-40 rounded-lg border border-neutral-200 bg-white p-1 shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
+          {
+            nav.map((item) => (
+              <a
+                href={localizePath(item.href, lang)}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                class="block rounded-md px-3 py-2 text-sm hover:bg-neutral-100 aria-[current=page]:text-accent-600 dark:hover:bg-neutral-800 dark:aria-[current=page]:text-neutral-100"
+              >
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>

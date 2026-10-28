@@ -1,0 +1,39 @@
+---
+import { formatDate, localizePath, t, type Lang } from '../i18n/utils';
+import { readingMinutes, slugOf, type Post } from '../lib/content';
+
+interface Props {
+  post: Post;
+  lang: Lang;
+}
+const { post, lang } = Astro.props;
+const { title, description, pubDate, tags, draft } = post.data;
+---
+
+<article class="group relative flex flex-col gap-2 py-6">
+  <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-neutral-600 dark:text-neutral-400">
+    <time datetime={pubDate.toISOString()}>{formatDate(pubDate, lang)}</time>
+    <span aria-hidden="true">·</span>
+    <span>{t(lang, 'blog.readingTime', { n: readingMinutes(post.body, lang) })}</span>
+    {draft && <span class="rounded border border-dashed border-neutral-500 px-1.5 text-xs text-neutral-700 dark:text-neutral-300">draft</span>}
+  </div>
+  <h3 class="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+    <a href={localizePath(`/blog/${slugOf(post)}/`, lang)} class="after:absolute after:inset-0 group-hover:text-accent-600 dark:group-hover:text-neutral-100">
+      {title}
+    </a>
+  </h3>
+  <p class="text-neutral-700 dark:text-neutral-400">{description}</p>
+  {
+    tags.length > 0 && (
+      <ul class="relative z-10 mt-1 flex flex-wrap gap-2">
+        {tags.map((tag) => (
+          <li>
+            <a href={localizePath(`/tags/${tag}/`, lang)} class="rounded-md bg-neutral-100 px-2 py-0.5 text-xs text-neutral-700 hover:bg-accent-100 hover:text-neutral-900 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:bg-accent-900/40 dark:hover:text-neutral-100">
+              #{tag}
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</article>

@@ -1,0 +1,29 @@
+---
+import Icon from './Icon.astro';
+import { profile } from '../data/profile';
+import { localizePath, pick, t, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-neutral-200 dark:border-neutral-800">
+  <div class="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 py-8 text-sm text-neutral-600 sm:flex-row sm:px-6 dark:text-neutral-400">
+    <div class="flex items-center gap-1">
+      {
+        profile.links.map((link) => (
+          <a href={link.url} aria-label={link.label} title={link.label} class="rounded-md p-2 hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-100">
+            <Icon name={link.icon} />
+          </a>
+        ))
+      }
+      <a href={localizePath('/rss.xml', lang)} aria-label={t(lang, 'footer.rss')} title={t(lang, 'footer.rss')} class="rounded-md p-2 hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-100">
+        <Icon name="rss" />
+      </a>
+    </div>
+    <p class="sm:ml-auto">© {year} {pick(profile.name, lang)} · {t(lang, 'footer.built')}</p>
+  </div>
+</footer>

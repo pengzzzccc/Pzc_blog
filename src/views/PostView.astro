@@ -1,0 +1,141 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LibraryCover from '../components/LibraryCover.astro';
+import WorkCover from '../components/WorkCover.astro';
+import StatusBadge from '../components/StatusBadge.astro';
+import { formatDate, localizePath, otherLang, t, type Lang } from '../i18n/utils';
+import { findWork, getPosts, hasPost, readingMinutes, slugOf, type Post } from '../lib/content';
+import { findReviewedGame } from '../lib/library';
+
+interface Props {
+  lang: Lang;
+  post: Post;
+}
+const { lang, post } = Astro.props;
+const slug = slugOf(post);
+const { title, description, pubDate, updatedDate, tags, cover, game } = post.data;
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+
+const posts = await getPosts(lang);
+const index = posts.findIndex((p) => slugOf(p) === slug);
+const newer = index > 0 ? posts[index - 1] : undefined;
+const older = index >= 0 && index < posts.length - 1 ? posts[index + 1] : undefined;
+
+const work = game ? await findWork(game, lang) : undefined;
+const reviewed = await findReviewedGame(slug);
+const other = otherLang(lang);
+const alternate = (await hasPost(slug, other)) ? localizePath(`/blog/${slug}/`, other) : null;
+---
+
+<BaseLayout lang={lang} title={title} description={description} image={cover?.src} alternate={alternate} type="article">
+  <div class="mx-auto grid max-w-5xl gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[minmax(0,1fr)_200px]">
+  <article class="box min-w-0 max-w-3xl p-6 sm:p-10">
+    <header>
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-neutral-600 dark:text-neutral-400">
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate, lang)}</time>
+        {updatedDate && <span>· {t(lang, 'blog.updated')} {formatDate(updatedDate, lang)}</span>}
+        <span>· {t(lang, 'blog.readingTime', { n: readingMinutes(post.body, lang) })}</span>
+      </div>
+      <h1 class="mt-3 text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl dark:text-neutral-50">{title}</h1>
+      <p class="mt-4 text-lg text-neutral-700 dark:text-neutral-400">{description}</p>
+      {
+        tags.length > 0 && (
+          <ul class="mt-4 flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <li>
+                <a href={localizePath(`/tags/${tag}/`, lang)} class="rounded-md bg-neutral-100 px-2 py-0.5 text-xs text-neutral-700 hover:bg-accent-100 hover:text-neutral-900 dark:bg-neutral-800 dark:text-neutral-400">
+                  #{tag}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+
+    {cover && <Image src={cover} alt="" widths={[640, 960, 1280]} sizes="(min-width: 1024px) 768px, 100vw" class="mt-8 aspect-[2/1] w-full rounded-xl object-cover" />}
+
+    <!-- 关联卡片：所属作品 / 评测对象 -->
+    <div class:list={['mt-8 grid gap-4', !work && !reviewed && 'hidden']}>
+      {
+        work && (
+          <a href={localizePath(`/games/${slugOf(work)}/`, lang)} class="flex items-center gap-4 rounded-xl border border-neutral-200 p-3 hover:border-neutral-900 dark:border-neutral-800 dark:hover:border-neutral-300">
+            <div class="aspect-video w-28 shrink-0 overflow-hidden rounded-md">
+              <WorkCover work={work} widths={[160, 320]} sizes="112px" textClass="text-xs" />
+            </div>
+            <div>
+              <p class="text-xs text-neutral-600">{t(lang, 'blog.belongsTo')}</p>
+              <p class="font-semibold text-neutral-900 dark:text-neutral-100">{work.data.title}</p>
+              <p class="line-clamp-1 text-sm text-neutral-700 dark:text-neutral-400">{work.data.summary}</p>
+            </div>
+          </a>
+        )
+      }
+      {
+        reviewed && (
+          <a href={localizePath('/library/', lang)} class="flex items-center gap-4 rounded-xl border border-neutral-200 p-3 hover:border-neutral-900 dark:border-neutral-800 dark:hover:border-neutral-300">
+            <div class="aspect-[2/3] w-14 shrink-0 overflow-hidden rounded-md bg-neutral-100 dark:bg-neutral-800">
+              <LibraryCover entry={reviewed} />
+            </div>
+            <div>
+              <p class="text-xs text-neutral-600">{t(lang, 'blog.reviewOf')}</p>
+              <p class="font-semibold text-neutral-900 dark:text-neutral-100">{reviewed.title}</p>
+              <div class="mt-1 flex items-center gap-2 text-sm">
+                <StatusBadge status={reviewed.status} lang={lang} />
+                {reviewed.rating !== undefined && <span class="font-medium text-neutral-900 dark:text-neutral-100">★ {reviewed.rating}</span>}
+              </div>
+            </div>
+          </a>
+        )
+      }
+    </div>
+
+    <div class="prose prose-neutral mt-10 max-w-none dark:prose-invert prose-a:text-neutral-900 dark:prose-a:text-neutral-100 prose-pre:rounded-lg prose-pre:border prose-pre:border-neutral-200 dark:prose-pre:border-neutral-700">
+      <Content />
+    </div>
+
+    <nav class="mt-16 grid gap-4 border-t border-neutral-200 pt-8 sm:grid-cols-2 dark:border-neutral-800">
+      {
+        older ? (
+          <a href={localizePath(`/blog/${slugOf(older)}/`, lang)} class="rounded-xl border border-neutral-200 p-4 hover:border-neutral-900 dark:border-neutral-800 dark:hover:border-neutral-300">
+            <p class="text-xs text-neutral-600">← {t(lang, 'blog.prev')}</p>
+            <p class="mt-1 font-medium text-neutral-900 dark:text-neutral-100">{older.data.title}</p>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        newer && (
+          <a href={localizePath(`/blog/${slugOf(newer)}/`, lang)} class="rounded-xl border border-neutral-200 p-4 text-right hover:border-neutral-900 dark:border-neutral-800 dark:hover:border-neutral-300">
+            <p class="text-xs text-neutral-600">{t(lang, 'blog.next')} →</p>
+            <p class="mt-1 font-medium text-neutral-900 dark:text-neutral-100">{newer.data.title}</p>
+          </a>
+        )
+      }
+    </nav>
+  </article>
+
+  {
+    toc.length > 1 && (
+      <aside class="hidden lg:block">
+        <nav class="sticky top-24 text-sm" aria-label={t(lang, 'blog.toc')}>
+          <p class="font-semibold text-neutral-900 dark:text-neutral-100">{t(lang, 'blog.toc')}</p>
+          <ul class="mt-3 space-y-2 border-l border-neutral-200 dark:border-neutral-800">
+            {toc.map((h) => (
+              <li class:list={[h.depth === 3 ? 'pl-6' : 'pl-3']}>
+                <a href={`#${h.slug}`} class="text-neutral-700 hover:text-accent-600 dark:text-neutral-400 dark:hover:text-neutral-100">
+                  {h.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+    )
+  }
+  </div>
+</BaseLayout>

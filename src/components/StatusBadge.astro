@@ -1,0 +1,21 @@
+---
+import { t, type Lang } from '../i18n/utils';
+import type { LibraryStatus } from '../lib/library';
+
+interface Props {
+  status: LibraryStatus;
+  lang: Lang;
+}
+const { status, lang } = Astro.props;
+const styles: Record<LibraryStatus, string> = {
+  playing: 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900',
+  completed: 'bg-white text-neutral-900 ring-1 ring-neutral-900 dark:bg-neutral-900 dark:text-white dark:ring-white',
+  dropped: 'bg-neutral-300 text-neutral-800 line-through dark:bg-neutral-700 dark:text-neutral-200',
+  wishlist: 'border border-dashed border-neutral-500 bg-white text-neutral-800 dark:bg-neutral-900 dark:text-neutral-200',
+  played: 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-400',
+};
+---
+
+<span class:list={['inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-medium', styles[status]]}>
+  {t(lang, `libstatus.${status}`)}
+</span>

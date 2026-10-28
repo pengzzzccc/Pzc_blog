@@ -1,0 +1,15 @@
+---
+// 只在本地开发时显示的「待填写」提示，生产构建不输出任何内容
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+{
+  import.meta.env.DEV && (
+    <p class:list={['rounded-lg border border-dashed border-amber-400 bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-950/30 dark:text-amber-300', className]}>
+      待填写：<slot />
+    </p>
+  )
+}

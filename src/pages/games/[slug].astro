@@ -1,0 +1,9 @@
+---
+import WorkView from '../../views/WorkView.astro';
+import { workPaths } from '../../lib/paths';
+
+export const getStaticPaths = () => workPaths('zh');
+const { work } = Astro.props;
+---
+
+<WorkView lang="zh" work={work} />

@@ -1,0 +1,61 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  /* 黑白灰配色：强调色就是近黑色，需要换成彩色时只改这一组 */
+  --color-accent-50: #f7f7f7;
+  --color-accent-100: #ebebeb;
+  --color-accent-200: #d6d6d6;
+  --color-accent-300: #b0b0b0;
+  --color-accent-400: #8c8c8c;
+  --color-accent-500: #5c5c5c;
+  --color-accent-600: #1f1f1f;
+  --color-accent-700: #141414;
+  --color-accent-800: #0f0f0f;
+  --color-accent-900: #0a0a0a;
+
+  /* 纸张底色（偏灰），纹理见 public/textures/paper.svg */
+  --color-paper: #d9d8d4;
+  --color-paper-dark: #171716;
+}
+
+@layer base {
+  html {
+    @apply bg-paper text-neutral-900 antialiased dark:bg-paper-dark dark:text-neutral-100;
+    background-image: url('/textures/paper.svg');
+    background-size: 480px 480px;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  ::selection {
+    @apply bg-neutral-900 text-white dark:bg-white dark:text-neutral-900;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-neutral-900 dark:outline-neutral-100;
+  }
+}
+
+/* 白色内容框：放在纸张背景上的卡片、面板 */
+@utility box {
+  @apply rounded-xl border border-neutral-300/70 bg-white shadow-[0_1px_3px_rgb(0_0_0/0.06)] dark:border-neutral-800 dark:bg-neutral-900;
+}
+
+/* Shiki 双主题：暗色模式下切换到 dark 变量 */
+html.dark .astro-code,
+html.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+/* 游戏库/作品筛选：被筛掉的卡片隐藏 */
+[data-filter-hidden] {
+  display: none !important;
+}

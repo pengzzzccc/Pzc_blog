@@ -1,0 +1,131 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DevHint from '../components/DevHint.astro';
+import LibraryCard from '../components/LibraryCard.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { formatDate, t, type Lang } from '../i18n/utils';
+import { getLibrary, lastSyncedAt, libraryStats, reviewHref, statusOrder } from '../lib/library';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const entries = await getLibrary();
+const stats = libraryStats(entries);
+const reviewLinks = await Promise.all(entries.map((e) => reviewHref(e, lang)));
+const counts = Object.fromEntries(statusOrder.map((s) => [s, entries.filter((e) => e.status === s).length]));
+const filters = [
+  { key: 'all', label: t(lang, 'library.filter.all'), count: entries.length },
+  ...statusOrder.filter((s) => counts[s] > 0).map((s) => ({ key: s, label: t(lang, `libstatus.${s}`), count: counts[s] })),
+];
+const statCards = [
+  { label: t(lang, 'library.total'), value: String(stats.total) },
+  { label: t(lang, 'library.playing'), value: String(stats.playing) },
+  { label: t(lang, 'library.completed'), value: String(stats.completed) },
+  { label: t(lang, 'library.avg'), value: stats.avg === null ? '—' : stats.avg.toFixed(1) },
+];
+const pill =
+  'rounded-full border border-neutral-300 bg-white px-3.5 py-1.5 text-sm text-neutral-700 hover:border-neutral-900 aria-pressed:border-accent-600 aria-pressed:bg-accent-600 aria-pressed:text-white dark:border-neutral-700 dark:text-neutral-400 dark:aria-pressed:border-accent-500 dark:aria-pressed:bg-accent-500';
+---
+
+<BaseLayout lang={lang} title={t(lang, 'library.title')} description={t(lang, 'library.desc')}>
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <SectionHeading as="h1" title={t(lang, 'library.title')} description={t(lang, 'library.desc')} />
+
+    <dl class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {
+        statCards.map((s) => (
+          <div class="box p-4">
+            <dt class="text-xs text-neutral-600">{s.label}</dt>
+            <dd class="mt-1 text-2xl font-semibold text-neutral-900 dark:text-neutral-50">{s.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    {lastSyncedAt && <p class="mt-3 text-xs text-neutral-600">{t(lang, 'library.synced')}：{formatDate(lastSyncedAt, lang)}</p>}
+
+    {
+      entries.length === 0 && (
+        <DevHint class="mt-8">配置 STEAM_API_KEY 和 STEAM_ID 后运行 pnpm sync:steam 导入 Steam 游戏；评分、短评和非 Steam 游戏写在 src/content/library/&lt;slug&gt;.yaml（见 docs/DESIGN.md §9.3）</DevHint>
+      )
+    }
+    <div data-library-toolbar class:list={['mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between', entries.length === 0 && 'hidden']}>
+      <div class="flex flex-wrap gap-2" role="group">
+        {
+          filters.map((f, i) => (
+            <button type="button" data-status-filter={f.key} aria-pressed={i === 0 ? 'true' : 'false'} class={pill}>
+              {f.label} <span class="opacity-60">{f.count}</span>
+            </button>
+          ))
+        }
+      </div>
+      <label class="flex items-center gap-2 text-sm text-neutral-700 dark:text-neutral-400">
+        {t(lang, 'library.sort')}
+        <select data-sort class="rounded-lg border border-neutral-300 bg-white px-2 py-1.5 text-sm dark:border-neutral-700 dark:bg-neutral-900">
+          <option value="rating">{t(lang, 'library.sort.rating')}</option>
+          <option value="recent">{t(lang, 'library.sort.recent')}</option>
+        </select>
+      </label>
+    </div>
+
+    <ul data-library-grid class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      {entries.map((entry, i) => <LibraryCard entry={entry} lang={lang} reviewHref={reviewLinks[i]} />)}
+    </ul>
+    <p data-library-empty hidden={entries.length > 0} class="mt-6 text-neutral-600">{t(lang, 'library.empty')}</p>
+  </div>
+</BaseLayout>
+
+<script>
+  // 筛选和排序都在客户端完成，状态写进 URL（?status=completed&sort=recent）方便分享
+  const toolbar = document.querySelector<HTMLElement>('[data-library-toolbar]');
+  const grid = document.querySelector<HTMLElement>('[data-library-grid]');
+  const empty = document.querySelector<HTMLElement>('[data-library-empty]');
+  const select = toolbar?.querySelector<HTMLSelectElement>('[data-sort]');
+
+  function apply(status: string, sort: string) {
+    if (!toolbar || !grid || !select) return;
+    for (const b of toolbar.querySelectorAll<HTMLElement>('[data-status-filter]')) {
+      b.setAttribute('aria-pressed', String(b.dataset.statusFilter === status));
+    }
+    select.value = sort;
+    const cards = [...grid.querySelectorAll<HTMLElement>(':scope > li')];
+    let visible = 0;
+    for (const card of cards) {
+      const show = status === 'all' || card.dataset.status === status;
+      card.toggleAttribute('data-filter-hidden', !show);
+      if (show) visible++;
+    }
+    const num = (el: HTMLElement, key: string) => Number(el.dataset[key] ?? 0);
+    cards.sort((a, b) =>
+      sort === 'recent'
+        ? num(b, 'recent') - num(a, 'recent')
+        : num(b, 'rating') - num(a, 'rating') || num(b, 'recent') - num(a, 'recent'),
+    );
+    grid.append(...cards);
+    if (empty) empty.hidden = visible > 0;
+  }
+
+  function sync() {
+    const params = new URLSearchParams(location.search);
+    apply(params.get('status') ?? 'all', params.get('sort') ?? 'rating');
+  }
+
+  function update(changes: Record<string, string>) {
+    const params = new URLSearchParams(location.search);
+    for (const [key, value] of Object.entries(changes)) {
+      const isDefault = (key === 'status' && value === 'all') || (key === 'sort' && value === 'rating');
+      if (isDefault) params.delete(key);
+      else params.set(key, value);
+    }
+    const query = params.toString();
+    history.replaceState(null, '', query ? `?${query}` : location.pathname);
+    sync();
+  }
+
+  toolbar?.addEventListener('click', (event) => {
+    const button = (event.target as HTMLElement).closest<HTMLElement>('[data-status-filter]');
+    if (button) update({ status: button.dataset.statusFilter ?? 'all' });
+  });
+  select?.addEventListener('change', () => update({ sort: select.value }));
+  sync();
+</script>

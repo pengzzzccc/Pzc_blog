@@ -1,0 +1,137 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DevHint from '../components/DevHint.astro';
+import Gallery from '../components/Gallery.astro';
+import GamePlayer from '../components/GamePlayer.astro';
+import Icon from '../components/Icon.astro';
+import { formatDate, formatMonth, localizePath, otherLang, t, type Lang } from '../i18n/utils';
+import { getDevlogs, getWorks, slugOf, type Work } from '../lib/content';
+
+interface Props {
+  lang: Lang;
+  work: Work;
+}
+const { lang, work } = Astro.props;
+const slug = slugOf(work);
+const { title, summary, cover, engine, genres, platforms, role, team, period, status, screenshots, links } = work.data;
+const { Content } = await render(work);
+const devlogs = await getDevlogs(slug, lang);
+
+const works = await getWorks(lang);
+const index = works.findIndex((w) => slugOf(w) === slug);
+const prev = index > 0 ? works[index - 1] : undefined;
+const next = index < works.length - 1 ? works[index + 1] : undefined;
+
+const other = otherLang(lang);
+const alternate = (await getWorks(other)).some((w) => slugOf(w) === slug) ? localizePath(`/games/${slug}/`, other) : null;
+const meta = [
+  { label: t(lang, 'works.engine'), value: t(lang, `engine.${engine}`) },
+  { label: t(lang, 'works.platforms'), value: platforms.join(' / ') },
+  { label: t(lang, 'works.genres'), value: genres.join(' / ') },
+  { label: t(lang, 'works.role'), value: role },
+  { label: t(lang, 'works.team'), value: team ? t(lang, 'works.team.n', { n: team }) : '' },
+  {
+    label: t(lang, 'works.period'),
+    value: `${formatMonth(period.start, lang)} – ${period.end ? formatMonth(period.end, lang) : t(lang, 'works.present')}`,
+  },
+].filter((m) => m.value);
+---
+
+<BaseLayout lang={lang} title={title} description={summary} image={cover?.src} alternate={alternate}>
+  <div class="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
+    <a href={localizePath('/games/', lang)} class="text-sm text-accent-600 hover:underline dark:text-neutral-100">← {t(lang, 'works.title')}</a>
+    <header class="mt-4">
+      <div class="flex flex-wrap items-center gap-3">
+        <h1 class="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl dark:text-neutral-50">{title}</h1>
+        <span class="rounded-md bg-accent-100 px-2 py-0.5 text-sm font-medium text-accent-800 dark:bg-accent-900/40 dark:text-neutral-100">{t(lang, `status.${status}`)}</span>
+      </div>
+      <p class="mt-3 text-lg text-neutral-700 dark:text-neutral-400">{summary}</p>
+    </header>
+
+    <div class="mt-8">
+      <GamePlayer work={work} lang={lang} />
+    </div>
+
+    <dl class="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 box p-5 sm:grid-cols-3">
+      {
+        meta.map((m) => (
+          <div>
+            <dt class="text-xs text-neutral-600">{m.label}</dt>
+            <dd class="mt-1 text-sm font-medium text-neutral-900 dark:text-neutral-100">{m.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    {
+      links.length > 0 && (
+        <div class="mt-6 flex flex-wrap gap-2" aria-label={t(lang, 'works.links')}>
+          {links.map((link) => (
+            <a href={link.url} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 dark:bg-neutral-900 text-sm hover:border-neutral-900 hover:text-neutral-900 dark:border-neutral-700 dark:hover:text-neutral-100">
+              {link.label}
+              <Icon name="external" class="size-4" />
+            </a>
+          ))}
+        </div>
+      )
+    }
+
+    {
+      screenshots.length === 0 && (
+        <DevHint class="mt-8">截图放到作品目录的 screenshots/ 下，并在 frontmatter 的 screenshots 里列出；封面写在 cover 字段</DevHint>
+      )
+    }
+    {
+      screenshots.length > 0 && (
+        <section class="mt-12">
+          <h2 class="mb-4 text-xl font-bold text-neutral-900 dark:text-neutral-50">{t(lang, 'works.screenshots')}</h2>
+          <Gallery images={screenshots} title={title} />
+        </section>
+      )
+    }
+
+    <section class="box prose prose-neutral mt-12 max-w-none p-6 sm:p-10 dark:prose-invert prose-a:text-neutral-900 dark:prose-a:text-neutral-100">
+      <Content />
+    </section>
+
+    {
+      devlogs.length > 0 && (
+        <section class="mt-12">
+          <h2 class="mb-4 text-xl font-bold text-neutral-900 dark:text-neutral-50">{t(lang, 'works.devlog')}</h2>
+          <ul class="box divide-y divide-neutral-200 dark:divide-neutral-800">
+            {devlogs.map((post) => (
+              <li>
+                <a href={localizePath(`/blog/${slugOf(post)}/`, lang)} class="flex items-baseline justify-between gap-4 p-4 hover:bg-neutral-50 dark:hover:bg-neutral-900">
+                  <span class="font-medium text-neutral-900 dark:text-neutral-100">{post.data.title}</span>
+                  <time class="shrink-0 text-sm text-neutral-600" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate, lang)}</time>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <nav class="mt-16 grid gap-4 border-t border-neutral-200 pt-8 sm:grid-cols-2 dark:border-neutral-800">
+      {
+        prev ? (
+          <a href={localizePath(`/games/${slugOf(prev)}/`, lang)} class="box p-4 hover:border-neutral-900 dark:hover:border-neutral-300">
+            <p class="text-xs text-neutral-600">← {t(lang, 'works.prev')}</p>
+            <p class="mt-1 font-medium text-neutral-900 dark:text-neutral-100">{prev.data.title}</p>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next && (
+          <a href={localizePath(`/games/${slugOf(next)}/`, lang)} class="box p-4 text-right hover:border-neutral-900 dark:hover:border-neutral-300">
+            <p class="text-xs text-neutral-600">{t(lang, 'works.next')} →</p>
+            <p class="mt-1 font-medium text-neutral-900 dark:text-neutral-100">{next.data.title}</p>
+          </a>
+        )
+      }
+    </nav>
+  </div>
+</BaseLayout>

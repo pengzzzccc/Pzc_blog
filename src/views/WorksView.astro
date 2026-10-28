@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DevHint from '../components/DevHint.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import WorkCard from '../components/WorkCard.astro';
+import { t, type Lang } from '../i18n/utils';
+import { getWorks } from '../lib/content';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const works = await getWorks(lang);
+const engines = [...new Set(works.map((w) => w.data.engine))];
+const filters = [
+  { key: 'all', label: t(lang, 'works.all') },
+  { key: 'playable', label: t(lang, 'works.playable') },
+  ...engines.map((e) => ({ key: `engine:${e}`, label: t(lang, `engine.${e}`) })),
+];
+---
+
+<BaseLayout lang={lang} title={t(lang, 'works.title')} description={t(lang, 'works.desc')}>
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <SectionHeading as="h1" title={t(lang, 'works.title')} description={t(lang, 'works.desc')} />
+
+    {
+      works.length === 0 && (
+        <DevHint class="mb-6">在 src/content/games/zh/&lt;slug&gt;/index.mdx 添加作品（同目录放 cover 和截图），字段见 docs/DESIGN.md §6.2、§9.2</DevHint>
+      )
+    }
+    <div data-works-filter class:list={['mb-8 flex flex-wrap gap-2', works.length === 0 && 'hidden']} role="group">
+      {
+        filters.map((f, i) => (
+          <button
+            type="button"
+            data-filter={f.key}
+            aria-pressed={i === 0 ? 'true' : 'false'}
+            class="rounded-full border border-neutral-300 bg-white px-3.5 py-1.5 text-sm text-neutral-700 hover:border-neutral-900 aria-pressed:border-accent-600 aria-pressed:bg-accent-600 aria-pressed:text-white dark:border-neutral-700 dark:text-neutral-400 dark:aria-pressed:border-accent-500 dark:aria-pressed:bg-accent-500"
+          >
+            {f.label}
+          </button>
+        ))
+      }
+    </div>
+
+    {works.length === 0 && <p class="text-neutral-600">{t(lang, 'works.empty')}</p>}
+    <div data-works-grid class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {works.map((work) => <WorkCard work={work} lang={lang} />)}
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-works-filter]');
+  const cards = document.querySelectorAll<HTMLElement>('[data-works-grid] > a');
+  bar?.addEventListener('click', (event) => {
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-filter]');
+    if (!button) return;
+    for (const b of bar.querySelectorAll('[data-filter]')) b.setAttribute('aria-pressed', String(b === button));
+    const key = button.dataset.filter ?? 'all';
+    for (const card of cards) {
+      const visible =
+        key === 'all' ||
+        (key === 'playable' && card.dataset.playable === 'true') ||
+        (key.startsWith('engine:') && card.dataset.engine === key.slice(7));
+      card.toggleAttribute('data-filter-hidden', !visible);
+    }
+  });
+</script>

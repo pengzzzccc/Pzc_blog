@@ -1,0 +1,8 @@
+---
+import BlogListView from '../../../views/BlogListView.astro';
+import { blogPagePaths } from '../../../lib/paths';
+
+export const getStaticPaths = () => blogPagePaths('zh');
+---
+
+<BlogListView lang="zh" page={Number(Astro.params.page)} />

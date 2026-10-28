@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="64" fill="#171717"/>
+  <circle cx="98" cy="30" r="10" fill="#a3a3a3" opacity=".6"/>
+  <text x="64" y="78" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="44" font-weight="700" fill="#fff">PZ</text>
+</svg>

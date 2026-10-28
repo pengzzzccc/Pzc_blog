@@ -1,0 +1,9 @@
+---
+import PostView from '../../../views/PostView.astro';
+import { postPaths } from '../../../lib/paths';
+
+export const getStaticPaths = () => postPaths('en');
+const { post } = Astro.props;
+---
+
+<PostView lang="en" post={post} />

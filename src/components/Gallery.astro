@@ -1,0 +1,42 @@
+---
+import { Image, getImage } from 'astro:assets';
+
+interface Props {
+  images: ImageMetadata[];
+  title: string;
+}
+const { images, title } = Astro.props;
+const full = await Promise.all(images.map((src) => getImage({ src, width: 1600, format: 'webp' })));
+---
+
+<div data-gallery class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+  {
+    images.map((src, i) => (
+      <button type="button" data-full={full[i].src} class="overflow-hidden rounded-lg ring-1 ring-neutral-200 hover:ring-accent-400 dark:ring-neutral-800">
+        <Image src={src} alt={`${title} ${i + 1}`} widths={[320, 480]} sizes="(min-width: 640px) 33vw, 50vw" class="aspect-video w-full object-cover transition hover:scale-105" />
+      </button>
+    ))
+  }
+  <dialog data-lightbox class="m-auto max-h-[90vh] max-w-[92vw] bg-transparent p-0 backdrop:bg-black/80">
+    <form method="dialog">
+      <button class="block cursor-zoom-out" aria-label="Close">
+        <img alt="" class="max-h-[90vh] max-w-[92vw] rounded-lg" />
+      </button>
+    </form>
+  </dialog>
+</div>
+
+<script>
+  for (const gallery of document.querySelectorAll<HTMLElement>('[data-gallery]')) {
+    const dialog = gallery.querySelector<HTMLDialogElement>('[data-lightbox]');
+    const img = dialog?.querySelector('img');
+    for (const button of gallery.querySelectorAll<HTMLButtonElement>('[data-full]')) {
+      button.addEventListener('click', () => {
+        if (!dialog || !img) return;
+        img.src = button.dataset.full ?? '';
+        img.alt = button.querySelector('img')?.alt ?? '';
+        dialog.showModal();
+      });
+    }
+  }
+</script>

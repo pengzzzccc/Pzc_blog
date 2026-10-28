@@ -1,0 +1,61 @@
+name: sync-steam
+
+on:
+  schedule:
+    - cron: '0 20 * * *' # UTC 20:00 = 北京时间 04:00
+  workflow_dispatch:
+
+concurrency:
+  group: sync-steam
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  # 被调用的 deploy.yml 需要推送镜像，权限不能超过调用方
+  packages: write
+
+jobs:
+  sync:
+    # 配置了 STEAM_ID 变量后才运行
+    if: vars.STEAM_ID != ''
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+      sha: ${{ steps.commit.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 拉取 Steam 游戏库
+        env:
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+          STEAM_ID: ${{ vars.STEAM_ID }}
+        run: node scripts/sync-steam.mjs
+
+      - id: commit
+        name: 有变化则提交
+        run: |
+          if git diff --quiet -- src/data; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/steam-library.json src/data/steam-sync-meta.json
+          git commit -m "chore: sync Steam library"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  # GITHUB_TOKEN 推送的提交不会触发 push 事件，所以这里显式调用部署
+  deploy:
+    needs: sync
+    if: needs.sync.outputs.changed == 'true'
+    uses: ./.github/workflows/deploy.yml
+    with:
+      ref: ${{ needs.sync.outputs.sha }}
+    secrets: inherit
