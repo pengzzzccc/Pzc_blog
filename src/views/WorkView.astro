@@ -14,7 +14,7 @@ interface Props {
 }
 const { lang, work } = Astro.props;
 const slug = slugOf(work);
-const { title, summary, cover, engine, genres, platforms, role, team, period, status, screenshots, links } = work.data;
+const { title, summary, cover, banner, engine, genres, platforms, role, team, period, status, screenshots, links } = work.data;
 const { Content } = await render(work);
 const devlogs = await getDevlogs(slug, lang);
 
@@ -39,7 +39,19 @@ const meta = [
 ---
 
 <BaseLayout lang={lang} title={title} description={summary} image={cover?.src} alternate={alternate}>
-  <div class="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
+  {
+    banner && (
+      <div class="relative -mb-28 h-64 w-full overflow-hidden sm:h-80 md:h-96">
+        <img
+          src={banner.src}
+          alt=""
+          class="size-full object-cover object-center opacity-30 blur-xs dark:opacity-20 pointer-events-none select-none"
+        />
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-paper/60 to-paper dark:via-paper-dark/60 dark:to-paper-dark" />
+      </div>
+    )
+  }
+  <div class="relative mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
     <a href={localizePath('/games/', lang)} class="text-sm text-accent-600 hover:underline dark:text-neutral-100">← {t(lang, 'works.title')}</a>
     <header class="mt-4">
       <div class="flex flex-wrap items-center gap-3">

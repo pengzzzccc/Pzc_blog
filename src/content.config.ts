@@ -28,6 +28,8 @@ const games = defineCollection({
       summary: z.string(),
       /** 不填时显示作品名标题占位 */
       cover: image().optional(),
+      /** 详情页背景/主视觉图（可选） */
+      banner: image().optional(),
       engine: z.enum(['unity', 'godot', 'unreal', 'tabletop', 'other']),
       genres: z.array(z.string()).default([]),
       platforms: z.array(z.string()).default([]),
