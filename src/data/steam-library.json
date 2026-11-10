@@ -1,1 +1,578 @@
-[]
+[
+  {
+    "id": "206440",
+    "appid": 206440,
+    "name": "To the Moon",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/206440/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/206440/header.jpg",
+    "playtimeMinutes": 1,
+    "lastPlayedAt": "2024-05-29T11:23:06.000Z"
+  },
+  {
+    "id": "218620",
+    "appid": 218620,
+    "name": "PAYDAY 2",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/218620/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/218620/header.jpg",
+    "playtimeMinutes": 8,
+    "lastPlayedAt": "2023-08-27T13:15:48.000Z"
+  },
+  {
+    "id": "236390",
+    "appid": 236390,
+    "name": "War Thunder",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/236390/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/236390/header.jpg",
+    "playtimeMinutes": 130,
+    "lastPlayedAt": "2025-02-13T09:36:59.000Z"
+  },
+  {
+    "id": "242760",
+    "appid": 242760,
+    "name": "The Forest",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/242760/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/242760/header.jpg",
+    "playtimeMinutes": 574,
+    "lastPlayedAt": "2025-11-28T02:32:55.000Z"
+  },
+  {
+    "id": "244210",
+    "appid": 244210,
+    "name": "Assetto Corsa",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/244210/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/244210/header.jpg",
+    "playtimeMinutes": 1428,
+    "lastPlayedAt": "2026-01-20T12:40:15.000Z"
+  },
+  {
+    "id": "261570",
+    "appid": 261570,
+    "name": "Ori and the Blind Forest",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/261570/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/261570/header.jpg",
+    "playtimeMinutes": 28,
+    "lastPlayedAt": "2023-07-31T12:10:48.000Z"
+  },
+  {
+    "id": "275850",
+    "appid": 275850,
+    "name": "No Man's Sky",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/275850/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/275850/header.jpg",
+    "playtimeMinutes": 140,
+    "lastPlayedAt": "2024-10-23T04:24:02.000Z"
+  },
+  {
+    "id": "289070",
+    "appid": 289070,
+    "name": "Sid Meier’s Civilization® VI",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/289070/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/289070/header.jpg",
+    "playtimeMinutes": 102,
+    "lastPlayedAt": "2024-12-24T11:56:39.000Z"
+  },
+  {
+    "id": "304430",
+    "appid": 304430,
+    "name": "INSIDE",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/304430/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/304430/header.jpg",
+    "playtimeMinutes": 277,
+    "lastPlayedAt": "2026-03-10T05:06:42.000Z"
+  },
+  {
+    "id": "312520",
+    "appid": 312520,
+    "name": "Rain World",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312520/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312520/header.jpg",
+    "playtimeMinutes": 95,
+    "lastPlayedAt": "2023-11-17T02:12:00.000Z"
+  },
+  {
+    "id": "322330",
+    "appid": 322330,
+    "name": "Don't Starve Together",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/322330/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/322330/header.jpg",
+    "playtimeMinutes": 55,
+    "lastPlayedAt": "2023-08-15T11:39:54.000Z"
+  },
+  {
+    "id": "367520",
+    "appid": 367520,
+    "name": "Hollow Knight",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/367520/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/367520/header.jpg",
+    "playtimeMinutes": 379,
+    "lastPlayedAt": "2026-09-25T08:49:49.000Z"
+  },
+  {
+    "id": "413150",
+    "appid": 413150,
+    "name": "Stardew Valley",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/413150/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/413150/header.jpg",
+    "playtimeMinutes": 715,
+    "lastPlayedAt": "2026-06-18T14:18:43.000Z"
+  },
+  {
+    "id": "431730",
+    "appid": 431730,
+    "name": "Aseprite",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/431730/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/431730/header.jpg",
+    "playtimeMinutes": 3655,
+    "lastPlayedAt": "2026-10-27T16:41:44.000Z"
+  },
+  {
+    "id": "438100",
+    "appid": 438100,
+    "name": "VRChat",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/438100/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/438100/header.jpg",
+    "playtimeMinutes": 1176,
+    "lastPlayedAt": "2026-02-09T12:54:53.000Z"
+  },
+  {
+    "id": "464060",
+    "appid": 464060,
+    "name": "RUINER",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/464060/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/464060/header.jpg",
+    "playtimeMinutes": 49,
+    "lastPlayedAt": "2024-11-30T10:43:23.000Z"
+  },
+  {
+    "id": "504230",
+    "appid": 504230,
+    "name": "Celeste",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/504230/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/504230/header.jpg",
+    "playtimeMinutes": 566,
+    "lastPlayedAt": "2026-11-09T15:18:48.000Z"
+  },
+  {
+    "id": "524220",
+    "appid": 524220,
+    "name": "NieR:Automata™",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/524220/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/524220/header.jpg",
+    "playtimeMinutes": 62,
+    "lastPlayedAt": "2026-09-25T12:53:34.000Z"
+  },
+  {
+    "id": "535480",
+    "appid": 535480,
+    "name": "Sundered®: Eldritch Edition",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/535480/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/535480/header.jpg",
+    "playtimeMinutes": 57,
+    "lastPlayedAt": "2023-09-30T10:01:25.000Z"
+  },
+  {
+    "id": "548430",
+    "appid": 548430,
+    "name": "Deep Rock Galactic",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/548430/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/548430/header.jpg",
+    "playtimeMinutes": 70,
+    "lastPlayedAt": "2025-02-08T03:51:29.000Z"
+  },
+  {
+    "id": "552990",
+    "appid": 552990,
+    "name": "World of Warships",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/552990/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/552990/header.jpg",
+    "playtimeMinutes": 19,
+    "lastPlayedAt": "2023-03-18T13:38:25.000Z"
+  },
+  {
+    "id": "557600",
+    "appid": 557600,
+    "name": "Gorogoa",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/557600/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/557600/header.jpg",
+    "playtimeMinutes": 7,
+    "lastPlayedAt": "2026-07-27T04:45:08.000Z"
+  },
+  {
+    "id": "582010",
+    "appid": 582010,
+    "name": "Monster Hunter: World",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/582010/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/582010/header.jpg",
+    "playtimeMinutes": 275,
+    "lastPlayedAt": "2024-02-08T12:29:41.000Z"
+  },
+  {
+    "id": "632360",
+    "appid": 632360,
+    "name": "Risk of Rain 2",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/632360/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/632360/header.jpg",
+    "playtimeMinutes": 65,
+    "lastPlayedAt": "2023-08-12T12:40:02.000Z"
+  },
+  {
+    "id": "638230",
+    "appid": 638230,
+    "name": "Journey",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/638230/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/638230/header.jpg",
+    "playtimeMinutes": 114,
+    "lastPlayedAt": "2023-10-23T09:58:14.000Z"
+  },
+  {
+    "id": "673750",
+    "appid": 673750,
+    "name": "Super Bunny Man",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/673750/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/673750/header.jpg",
+    "playtimeMinutes": 38,
+    "lastPlayedAt": "2023-06-16T14:42:34.000Z"
+  },
+  {
+    "id": "704000",
+    "appid": 704000,
+    "name": "GUNHEAD",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/704000/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/704000/header.jpg",
+    "playtimeMinutes": 25,
+    "lastPlayedAt": "2023-12-01T06:50:32.000Z"
+  },
+  {
+    "id": "714010",
+    "appid": 714010,
+    "name": "Aimlabs",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/714010/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/714010/header.jpg",
+    "playtimeMinutes": 1237,
+    "lastPlayedAt": "2026-11-09T13:33:00.000Z"
+  },
+  {
+    "id": "753640",
+    "appid": 753640,
+    "name": "Outer Wilds",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/753640/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/753640/header.jpg",
+    "playtimeMinutes": 45,
+    "lastPlayedAt": "2024-07-12T15:19:38.000Z"
+  },
+  {
+    "id": "787480",
+    "appid": 787480,
+    "name": "Phoenix Wright: Ace Attorney Trilogy",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/787480/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/787480/header.jpg",
+    "playtimeMinutes": 107,
+    "lastPlayedAt": "2024-05-25T17:18:43.000Z"
+  },
+  {
+    "id": "881020",
+    "appid": 881020,
+    "name": "Granblue Fantasy: Relink",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/881020/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/881020/header.jpg",
+    "playtimeMinutes": 1109,
+    "lastPlayedAt": "2024-10-20T11:00:52.000Z"
+  },
+  {
+    "id": "916440",
+    "appid": 916440,
+    "name": "Anno 1800",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/916440/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/916440/header.jpg",
+    "playtimeMinutes": 38,
+    "lastPlayedAt": "2025-07-22T12:30:30.000Z"
+  },
+  {
+    "id": "921570",
+    "appid": 921570,
+    "name": "OCTOPATH TRAVELER™",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/921570/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/921570/header.jpg",
+    "playtimeMinutes": 15,
+    "lastPlayedAt": "2026-07-02T14:05:18.000Z"
+  },
+  {
+    "id": "972660",
+    "appid": 972660,
+    "name": "Spiritfarer®: Farewell Edition",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/972660/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/972660/header.jpg",
+    "playtimeMinutes": 2538,
+    "lastPlayedAt": "2026-06-16T11:11:22.000Z"
+  },
+  {
+    "id": "1091500",
+    "appid": 1091500,
+    "name": "Cyberpunk 2077",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/header.jpg",
+    "playtimeMinutes": 2975,
+    "lastPlayedAt": "2026-06-25T13:59:11.000Z"
+  },
+  {
+    "id": "1142710",
+    "appid": 1142710,
+    "name": "Total War: WARHAMMER III",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1142710/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1142710/header.jpg",
+    "playtimeMinutes": 52,
+    "lastPlayedAt": "2023-03-12T09:10:14.000Z"
+  },
+  {
+    "id": "1144400",
+    "appid": 1144400,
+    "name": "Senren＊Banka",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1144400/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1144400/header.jpg",
+    "playtimeMinutes": 45,
+    "lastPlayedAt": "2024-12-12T05:08:20.000Z"
+  },
+  {
+    "id": "1172470",
+    "appid": 1172470,
+    "name": "Apex Legends™",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172470/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172470/header.jpg",
+    "playtimeMinutes": 66932,
+    "lastPlayedAt": "2026-11-09T14:22:47.000Z"
+  },
+  {
+    "id": "1188540",
+    "appid": 1188540,
+    "name": "Apex Aim Trainer",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1188540/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1188540/header.jpg",
+    "playtimeMinutes": 10,
+    "lastPlayedAt": "2023-11-12T08:00:59.000Z"
+  },
+  {
+    "id": "1203220",
+    "appid": 1203220,
+    "name": "NARAKA: BLADEPOINT",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1203220/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1203220/header.jpg",
+    "playtimeMinutes": 23,
+    "lastPlayedAt": "2024-03-25T18:04:13.000Z"
+  },
+  {
+    "id": "1222140",
+    "appid": 1222140,
+    "name": "Detroit: Become Human",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/header.jpg",
+    "playtimeMinutes": 232,
+    "lastPlayedAt": "2026-06-30T16:10:14.000Z"
+  },
+  {
+    "id": "1256610",
+    "appid": 1256610,
+    "name": "Dream Date",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1256610/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1256610/header.jpg",
+    "playtimeMinutes": 6,
+    "lastPlayedAt": "2024-01-21T08:39:38.000Z"
+  },
+  {
+    "id": "1280770",
+    "appid": 1280770,
+    "name": "Redmatch 2",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1280770/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1280770/header.jpg",
+    "playtimeMinutes": 21,
+    "lastPlayedAt": "2023-09-09T09:41:01.000Z"
+  },
+  {
+    "id": "1293830",
+    "appid": 1293830,
+    "name": "Forza Horizon 4",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1293830/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1293830/header.jpg",
+    "playtimeMinutes": 624,
+    "lastPlayedAt": "2025-03-08T09:02:38.000Z"
+  },
+  {
+    "id": "1329410",
+    "appid": 1329410,
+    "name": "雀魂麻將(MahjongSoul)",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1329410/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1329410/header.jpg",
+    "playtimeMinutes": 10,
+    "lastPlayedAt": "2024-07-25T11:29:02.000Z"
+  },
+  {
+    "id": "1335200",
+    "appid": 1335200,
+    "name": "Action Taimanin",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1335200/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1335200/header.jpg",
+    "playtimeMinutes": 31,
+    "lastPlayedAt": "2023-12-14T00:56:10.000Z"
+  },
+  {
+    "id": "1366540",
+    "appid": 1366540,
+    "name": "Dyson Sphere Program",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1366540/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1366540/header.jpg",
+    "playtimeMinutes": 928,
+    "lastPlayedAt": "2023-10-01T12:11:23.000Z"
+  },
+  {
+    "id": "1422450",
+    "appid": 1422450,
+    "name": "Deadlock",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1422450/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1422450/header.jpg",
+    "playtimeMinutes": 21,
+    "lastPlayedAt": "2026-10-30T03:08:51.000Z"
+  },
+  {
+    "id": "1426210",
+    "appid": 1426210,
+    "name": "It Takes Two",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1426210/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1426210/header.jpg",
+    "playtimeMinutes": 920,
+    "lastPlayedAt": "2024-03-17T06:56:20.000Z"
+  },
+  {
+    "id": "1568590",
+    "appid": 1568590,
+    "name": "Goose Goose Duck",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1568590/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1568590/header.jpg",
+    "playtimeMinutes": 238,
+    "lastPlayedAt": "2024-09-16T15:58:11.000Z"
+  },
+  {
+    "id": "1623730",
+    "appid": 1623730,
+    "name": "Palworld",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1623730/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1623730/header.jpg",
+    "playtimeMinutes": 648,
+    "lastPlayedAt": "2026-08-07T11:04:21.000Z"
+  },
+  {
+    "id": "1801110",
+    "appid": 1801110,
+    "name": "BOKURA",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1801110/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1801110/header.jpg",
+    "playtimeMinutes": 113,
+    "lastPlayedAt": "2026-09-26T08:47:26.000Z"
+  },
+  {
+    "id": "1868140",
+    "appid": 1868140,
+    "name": "DAVE THE DIVER",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1868140/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1868140/header.jpg",
+    "playtimeMinutes": 77,
+    "lastPlayedAt": "2026-09-25T10:55:56.000Z"
+  },
+  {
+    "id": "1920960",
+    "appid": 1920960,
+    "name": "VPet-Simulator",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1920960/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1920960/header.jpg",
+    "playtimeMinutes": 604,
+    "lastPlayedAt": "2023-09-18T12:15:48.000Z"
+  },
+  {
+    "id": "1928420",
+    "appid": 1928420,
+    "name": "Farlight 84",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1928420/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1928420/header.jpg",
+    "playtimeMinutes": 40,
+    "lastPlayedAt": "2025-01-19T10:49:34.000Z"
+  },
+  {
+    "id": "1966720",
+    "appid": 1966720,
+    "name": "Lethal Company",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1966720/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1966720/header.jpg",
+    "playtimeMinutes": 117,
+    "lastPlayedAt": "2025-02-17T09:35:13.000Z"
+  },
+  {
+    "id": "1977170",
+    "appid": 1977170,
+    "name": "Jusant",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1977170/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1977170/header.jpg",
+    "playtimeMinutes": 199,
+    "lastPlayedAt": "2026-06-30T11:31:03.000Z"
+  },
+  {
+    "id": "2076040",
+    "appid": 2076040,
+    "name": "The Finals Playtest",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2076040/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2076040/header.jpg",
+    "playtimeMinutes": 164,
+    "lastPlayedAt": "2023-11-02T04:22:50.000Z"
+  },
+  {
+    "id": "2121360",
+    "appid": 2121360,
+    "name": "东北之夏",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2121360/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2121360/header.jpg",
+    "playtimeMinutes": 6,
+    "lastPlayedAt": "2023-09-18T02:52:12.000Z"
+  },
+  {
+    "id": "2194530",
+    "appid": 2194530,
+    "name": "Yog-Sothoth’s Yard",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2194530/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2194530/header.jpg",
+    "playtimeMinutes": 338,
+    "lastPlayedAt": "2024-12-24T09:29:37.000Z"
+  },
+  {
+    "id": "2358720",
+    "appid": 2358720,
+    "name": "Black Myth: Wukong",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/header.jpg",
+    "playtimeMinutes": 872,
+    "lastPlayedAt": "2026-03-12T08:00:41.000Z"
+  },
+  {
+    "id": "3097560",
+    "appid": 3097560,
+    "name": "Liar's Bar",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3097560/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3097560/header.jpg",
+    "playtimeMinutes": 8,
+    "lastPlayedAt": "2024-12-31T13:21:00.000Z"
+  },
+  {
+    "id": "4197610",
+    "appid": 4197610,
+    "name": "Librarian: Tidy Up the Arcane Library!",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4197610/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4197610/header.jpg",
+    "playtimeMinutes": 64,
+    "lastPlayedAt": "2026-08-13T07:35:18.000Z"
+  },
+  {
+    "id": "4704690",
+    "appid": 4704690,
+    "name": "MECCHA CHAMELEON",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4704690/library_600x900.jpg",
+    "coverFallback": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4704690/header.jpg",
+    "playtimeMinutes": 177,
+    "lastPlayedAt": "2026-07-21T12:08:30.000Z"
+  }
+]

@@ -22,7 +22,7 @@ const isActive = (href: string) => current.startsWith(href.replace(/\/$/, ''));
 <header class="sticky top-0 z-40 border-b border-neutral-400/40 bg-paper/85 backdrop-blur dark:border-neutral-800/70 dark:bg-paper-dark/85">
   <div class="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4 sm:px-6">
     <a href={localizePath('/', lang)} class="flex items-center gap-2 font-semibold tracking-tight">
-      <img src={withBase(profile.avatar)} alt="" width="28" height="28" class="size-7 rounded-full" />
+      <img src={withBase(profile.avatar)} alt="" width="28" height="28" class="size-7 rounded-full object-cover" />
       <span>{pick(profile.name, lang)}</span>
     </a>
 

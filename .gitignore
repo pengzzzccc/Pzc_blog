@@ -13,7 +13,6 @@ pnpm-debug.log*
 # 环境变量
 .env
 .env.*
-!.env.example
 
 # 游戏 Web 构建不进 Git，由 scripts/upload-game.sh 单独上传
 /games/*

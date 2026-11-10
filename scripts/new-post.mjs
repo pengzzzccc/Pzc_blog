@@ -1,6 +1,6 @@
 // 生成文章模板。
-// 用法：pnpm new:post <slug> [标题] [--en] [--dir]
-//   --en   生成英文版（src/content/blog/en/）
+// 用法：pnpm new:post <slug> [标题] [--zh] [--dir]
+//   --zh   生成中文版（src/content/blog/zh/，默认生成英文版 src/content/blog/en/）
 //   --dir  生成 <slug>/index.mdx，方便同目录放图片
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
@@ -14,7 +14,7 @@ if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
   process.exit(1);
 }
 
-const lang = flags.has('--en') ? 'en' : 'zh';
+const lang = flags.has('--zh') ? 'zh' : 'en';
 const file = flags.has('--dir')
   ? `src/content/blog/${lang}/${slug}/index.mdx`
   : `src/content/blog/${lang}/${slug}.mdx`;

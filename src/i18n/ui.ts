@@ -1,6 +1,6 @@
-export const languages = { zh: '中文', en: 'English' } as const;
+export const languages = { en: 'English', zh: '中文' } as const;
 export type Lang = keyof typeof languages;
-export const defaultLang: Lang = 'zh';
+export const defaultLang: Lang = 'en';
 
 export const ui = {
   zh: {
@@ -93,6 +93,7 @@ export const ui = {
     'library.sort': '排序',
     'library.sort.rating': '评分',
     'library.sort.recent': '最近游玩',
+    'library.sort.playtime': '游玩时长',
     'library.review': '长评',
     'library.hours': '{n} 小时',
     'library.empty': '这个分类下还没有游戏。',
@@ -198,6 +199,7 @@ export const ui = {
     'library.sort': 'Sort',
     'library.sort.rating': 'Rating',
     'library.sort.recent': 'Recently played',
+    'library.sort.playtime': 'Playtime',
     'library.review': 'Review',
     'library.hours': '{n} h',
     'library.empty': 'No games in this category yet.',

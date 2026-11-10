@@ -10,14 +10,14 @@ export default defineConfig({
   base: process.env.PUBLIC_BASE_PATH || undefined,
   trailingSlash: 'ignore',
   i18n: {
-    defaultLocale: 'zh',
-    locales: ['zh', 'en'],
+    defaultLocale: 'en',
+    locales: ['en', 'zh'],
     routing: { prefixDefaultLocale: false },
   },
   integrations: [
     mdx(),
     sitemap({
-      i18n: { defaultLocale: 'zh', locales: { zh: 'zh-CN', en: 'en' } },
+      i18n: { defaultLocale: 'en', locales: { en: 'en', zh: 'zh-CN' } },
     }),
   ],
   markdown: {

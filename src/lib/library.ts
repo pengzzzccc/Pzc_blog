@@ -93,7 +93,12 @@ export async function getLibrary(): Promise<LibraryEntry[]> {
 }
 
 export function byRating(a: LibraryEntry, b: LibraryEntry): number {
-  return (b.rating ?? 0) - (a.rating ?? 0) || recentTime(b) - recentTime(a) || a.title.localeCompare(b.title);
+  return (
+    (b.rating ?? 0) - (a.rating ?? 0) ||
+    recentTime(b) - recentTime(a) ||
+    (b.playtimeMinutes ?? 0) - (a.playtimeMinutes ?? 0) ||
+    a.title.localeCompare(b.title)
+  );
 }
 
 export function recentTime(e: LibraryEntry): number {

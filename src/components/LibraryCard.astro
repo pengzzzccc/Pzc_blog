@@ -10,13 +10,18 @@ interface Props {
   reviewHref?: string;
 }
 const { entry, lang, reviewHref } = Astro.props;
-const hours = entry.playtimeMinutes ? Math.round(entry.playtimeMinutes / 60) : 0;
+const hours = entry.playtimeMinutes
+  ? entry.playtimeMinutes >= 600
+    ? Math.round(entry.playtimeMinutes / 60)
+    : Math.max(0.1, Math.round(entry.playtimeMinutes / 6) / 10)
+  : 0;
 ---
 
 <li
   data-status={entry.status}
   data-rating={entry.rating ?? 0}
   data-recent={recentTime(entry)}
+  data-playtime={entry.playtimeMinutes ?? 0}
   data-title={entry.title}
   class="box flex flex-col overflow-hidden"
 >

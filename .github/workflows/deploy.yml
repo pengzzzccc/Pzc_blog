@@ -39,6 +39,13 @@ jobs:
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
 
+      - name: 同步最新 Steam 游戏库（若已配置 STEAM_API_KEY）
+        if: env.STEAM_API_KEY != ''
+        env:
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+          STEAM_ID: ${{ vars.STEAM_ID || '76561199160274340' }}
+        run: node scripts/sync-steam.mjs
+
       - name: 类型与内容检查
         run: pnpm check
 

@@ -7,7 +7,7 @@ import type { Localized } from '../i18n/utils';
  */
 export const profile = {
   name: { zh: '彭沾慈', en: 'Peng Zhanci' } as Localized,
-  avatar: '/avatar.svg',
+  avatar: '/avatar.jpg',
   location: { zh: '悉尼', en: 'Sydney' } as Localized,
   /** 一句话定位 */
   tagline: {
@@ -69,6 +69,7 @@ export const profile = {
   links: [
     { label: 'GitHub', url: 'https://github.com/pengzzzccc', icon: 'github' },
     { label: 'itch.io', url: 'https://pengzzzccc.itch.io', icon: 'itch' },
+    { label: 'Steam', url: 'https://steamcommunity.com/profiles/76561199160274340/', icon: 'steam' },
     { label: 'Email', url: 'mailto:pengzhanci2005@gmail.com', icon: 'mail' },
   ] as { label: string; url: string; icon: 'github' | 'itch' | 'steam' | 'mail' }[],
 };

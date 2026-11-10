@@ -17,8 +17,6 @@ permissions:
 
 jobs:
   sync:
-    # 配置了 STEAM_ID 变量后才运行
-    if: vars.STEAM_ID != ''
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.commit.outputs.changed }}
@@ -32,9 +30,10 @@ jobs:
           node-version: 24
 
       - name: 拉取 Steam 游戏库
+        if: env.STEAM_API_KEY != ''
         env:
           STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
-          STEAM_ID: ${{ vars.STEAM_ID }}
+          STEAM_ID: ${{ vars.STEAM_ID || '76561199160274340' }}
         run: node scripts/sync-steam.mjs
 
       - id: commit

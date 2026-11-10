@@ -64,6 +64,7 @@ const pill =
         <select data-sort class="rounded-lg border border-neutral-300 bg-white px-2 py-1.5 text-sm dark:border-neutral-700 dark:bg-neutral-900">
           <option value="rating">{t(lang, 'library.sort.rating')}</option>
           <option value="recent">{t(lang, 'library.sort.recent')}</option>
+          <option value="playtime">{t(lang, 'library.sort.playtime')}</option>
         </select>
       </label>
     </div>
@@ -98,8 +99,10 @@ const pill =
     const num = (el: HTMLElement, key: string) => Number(el.dataset[key] ?? 0);
     cards.sort((a, b) =>
       sort === 'recent'
-        ? num(b, 'recent') - num(a, 'recent')
-        : num(b, 'rating') - num(a, 'rating') || num(b, 'recent') - num(a, 'recent'),
+        ? num(b, 'recent') - num(a, 'recent') || num(b, 'playtime') - num(a, 'playtime')
+        : sort === 'playtime'
+          ? num(b, 'playtime') - num(a, 'playtime') || num(b, 'rating') - num(a, 'rating')
+          : num(b, 'rating') - num(a, 'rating') || num(b, 'recent') - num(a, 'recent') || num(b, 'playtime') - num(a, 'playtime'),
     );
     grid.append(...cards);
     if (empty) empty.hidden = visible > 0;

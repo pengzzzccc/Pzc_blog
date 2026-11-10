@@ -28,7 +28,7 @@ export function stripBase(pathname: string): string {
 /** 去掉路径里的 base 与语言前缀，得到与语言无关的路径 */
 export function stripLang(pathname: string): string {
   const clean = stripBase(pathname);
-  const stripped = clean.replace(/^\/en(?=\/|$)/, '');
+  const stripped = clean.replace(/^\/(?:en|zh)(?=\/|$)/, '');
   return stripped === '' ? '/' : stripped;
 }
 
@@ -41,11 +41,11 @@ export function localizePath(path: string, lang: Lang): string {
 
 export function getLangFromUrl(url: URL): Lang {
   const clean = stripBase(url.pathname);
-  return clean === '/en' || clean.startsWith('/en/') ? 'en' : 'zh';
+  return clean === '/zh' || clean.startsWith('/zh/') ? 'zh' : 'en';
 }
 
 export function otherLang(lang: Lang): Lang {
-  return lang === 'zh' ? 'en' : 'zh';
+  return lang === 'en' ? 'zh' : 'en';
 }
 
 export const htmlLang: Record<Lang, string> = { zh: 'zh-CN', en: 'en' };
@@ -58,8 +58,9 @@ export function formatMonth(date: Date, lang: Lang): string {
   return new Intl.DateTimeFormat(htmlLang[lang], { year: 'numeric', month: 'short' }).format(date);
 }
 
-/** 双语文本：缺英文时回落到中文 */
-export type Localized = { zh: string; en?: string };
+/** 双语文本：缺英文时回落到中文，缺中文时回落到英文 */
+export type Localized = { zh?: string; en?: string };
 export function pick(text: Localized, lang: Lang): string {
-  return (lang === 'en' && text.en) || text.zh;
+  if (lang === 'en') return text.en || text.zh || '';
+  return text.zh || text.en || '';
 }
