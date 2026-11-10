@@ -5,7 +5,7 @@ import Icon from '../components/Icon.astro';
 import LibraryCover from '../components/LibraryCover.astro';
 import WorkCover from '../components/WorkCover.astro';
 import { profile } from '../data/profile';
-import { localizePath, pick, t, type Lang } from '../i18n/utils';
+import { localizePath, pick, t, withBase, type Lang } from '../i18n/utils';
 import { getPosts, getWorks } from '../lib/content';
 import { getLibrary, recentTime } from '../lib/library';
 
@@ -34,7 +34,7 @@ const cardClass =
   <!-- Hero：个人介绍 + 三个入口 -->
   <section class="mx-auto max-w-6xl px-4 pt-16 pb-12 sm:px-6 sm:pt-24">
     <div class="flex flex-col gap-8 sm:flex-row sm:items-start">
-      <img src={profile.avatar} alt={name} width="112" height="112" class="size-24 shrink-0 rounded-full ring-4 ring-white sm:size-28 dark:ring-neutral-800" />
+      <img src={withBase(profile.avatar)} alt={name} width="112" height="112" class="size-24 shrink-0 rounded-full ring-4 ring-white sm:size-28 dark:ring-neutral-800" />
       <div class="max-w-2xl flex-1">
         <h1 class="text-4xl font-bold tracking-tight text-neutral-900 sm:text-5xl dark:text-neutral-50">{name}</h1>
         {
@@ -64,7 +64,7 @@ const cardClass =
                 </a>
               ))}
               {profile.resume && (
-                <a href={profile.resume} data-umami-event="download-resume" class="ml-2 inline-flex items-center gap-1.5 rounded-md border border-neutral-300 px-3 py-1.5 text-sm hover:border-neutral-900 hover:text-neutral-900 dark:border-neutral-700 dark:hover:text-neutral-100">
+                <a href={withBase(profile.resume)} data-umami-event="download-resume" class="ml-2 inline-flex items-center gap-1.5 rounded-md border border-neutral-300 px-3 py-1.5 text-sm hover:border-neutral-900 hover:text-neutral-900 dark:border-neutral-700 dark:hover:text-neutral-100">
                   <Icon name="download" class="size-4" />
                   {t(lang, 'home.resume')}
                 </a>

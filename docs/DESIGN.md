@@ -55,11 +55,10 @@
 | SEO | `@astrojs/sitemap`（含 hreflang）、`@astrojs/rss`、OG/Twitter meta | 中英各一份 RSS |
 | 图片 | `astro:assets` | 构建期生成 WebP/AVIF 和响应式尺寸 |
 | 外部数据 | Steam Web API | 只在定时同步脚本里调用，构建时不调用 |
-| 访问统计 | 自托管 **Umami** + PostgreSQL | 开源、无 Cookie、数据在自己手里 |
-| Web 服务器 | **Caddy 2** | 自动申请和续期 HTTPS 证书；配置简单；按路径加响应头（游戏试玩需要）；反向代理 Umami |
+| 访问统计 | **Umami**（可选，支持 Umami Cloud 或自托管实例） | 开源、无 Cookie、轻量 |
+| 静态托管 | **GitHub Pages** | 免费、免运维、自带全球 CDN 与 HTTPS，自动适配仓库子路径与自定义域名 |
 | 工具链 | pnpm、Node 24 LTS（只用于构建）、`astro check` 类型检查 | 首版不引入 ESLint/Prettier，需要时再加 |
-| 容器 | Docker 多阶段构建、Docker Compose v2 | 运行镜像里只有 Caddy 和静态文件，体积小 |
-| CI/CD | GitHub Actions + GHCR（GitHub Container Registry） | 部署区域在海外，直接用 GitHub 生态，无需额外的镜像仓库 |
+| CI/CD | GitHub Actions（`configure-pages` + `deploy-pages`） | 每次合并/推送到 `main` 分支或同步 Steam 数据后自动构建并发布到 GitHub Pages |
 
 ---
 

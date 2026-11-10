@@ -8,21 +8,40 @@ export function t(lang: Lang, key: UiKey, vars: Record<string, string | number> 
   return text.replace(/\{(\w+)\}/g, (_, name) => String(vars[name] ?? `{${name}}`));
 }
 
-/** 去掉路径里的语言前缀，得到与语言无关的路径 */
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+/** 为站内根相对路径加上 base 前缀（外链或已含前缀的路径保持不变） */
+export function withBase(path: string): string {
+  if (!path.startsWith('/') || !base) return path;
+  if (path === base || path.startsWith(`${base}/`)) return path;
+  return `${base}${path}`;
+}
+
+/** 去掉路径里的 base 前缀 */
+export function stripBase(pathname: string): string {
+  if (base && (pathname === base || pathname.startsWith(`${base}/`))) {
+    return pathname.slice(base.length) || '/';
+  }
+  return pathname;
+}
+
+/** 去掉路径里的 base 与语言前缀，得到与语言无关的路径 */
 export function stripLang(pathname: string): string {
-  const stripped = pathname.replace(/^\/en(?=\/|$)/, '');
+  const clean = stripBase(pathname);
+  const stripped = clean.replace(/^\/en(?=\/|$)/, '');
   return stripped === '' ? '/' : stripped;
 }
 
-/** 把与语言无关的路径转换成指定语言的路径 */
+/** 把与语言无关的路径转换成指定语言的路径（含 base 前缀） */
 export function localizePath(path: string, lang: Lang): string {
   const clean = stripLang(path);
-  if (lang === defaultLang) return clean;
-  return clean === '/' ? `/${lang}/` : `/${lang}${clean}`;
+  const localized = lang === defaultLang ? clean : clean === '/' ? `/${lang}/` : `/${lang}${clean}`;
+  return withBase(localized);
 }
 
 export function getLangFromUrl(url: URL): Lang {
-  return url.pathname === '/en' || url.pathname.startsWith('/en/') ? 'en' : 'zh';
+  const clean = stripBase(url.pathname);
+  return clean === '/en' || clean.startsWith('/en/') ? 'en' : 'zh';
 }
 
 export function otherLang(lang: Lang): Lang {

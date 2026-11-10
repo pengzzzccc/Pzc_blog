@@ -2,12 +2,8 @@ name: deploy
 
 on:
   push:
-    branches: [main]
+    branches: [main] # 每次合并 PR 或直接推送到 main 分支时自动触发更新
   workflow_dispatch:
-    inputs:
-      ref:
-        description: 要部署的提交 SHA（留空为当前分支最新提交；可用于回滚）
-        required: false
   workflow_call:
     inputs:
       ref:
@@ -15,96 +11,57 @@ on:
         required: false
 
 concurrency:
-  group: deploy
+  group: pages
   cancel-in-progress: false
 
 permissions:
   contents: read
-  packages: write
+  pages: write
+  id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      sha: ${{ steps.meta.outputs.sha }}
-      image: ${{ steps.meta.outputs.image }}
     steps:
       - uses: actions/checkout@v4
         with:
           # sync-steam 调用时传入新提交；否则会检出调用方触发时的旧提交
           ref: ${{ inputs.ref || github.sha }}
 
-      - id: meta
-        run: |
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-          echo "image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/pzc-blog" >> "$GITHUB_OUTPUT"
+      - name: 配置 GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
 
-      - uses: docker/setup-buildx-action@v3
-      - uses: docker/login-action@v3
+      - uses: actions/setup-node@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          node-version: 24
 
-      - uses: docker/build-push-action@v6
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+
+      - name: 类型与内容检查
+        run: pnpm check
+
+      - name: 构建静态站点
+        env:
+          PUBLIC_SITE_URL: ${{ steps.pages.outputs.origin }}
+          PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          PUBLIC_UMAMI_SRC: ${{ vars.PUBLIC_UMAMI_SRC }}
+          PUBLIC_UMAMI_WEBSITE_ID: ${{ vars.PUBLIC_UMAMI_WEBSITE_ID }}
+        run: pnpm build
+
+      - name: 上传 Pages 产物
+        uses: actions/upload-pages-artifact@v3
         with:
-          context: .
-          push: true
-          tags: |
-            ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.sha }}
-            ${{ steps.meta.outputs.image }}:latest
-          build-args: |
-            PUBLIC_SITE_URL=${{ vars.PUBLIC_SITE_URL }}
-            PUBLIC_UMAMI_SRC=${{ vars.PUBLIC_UMAMI_SRC }}
-            PUBLIC_UMAMI_WEBSITE_ID=${{ vars.PUBLIC_UMAMI_WEBSITE_ID }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          path: ./dist
 
   deploy:
     needs: build
-    # 服务器准备好后，在仓库 Variables 中设置 DEPLOY_ENABLED=true 才会部署
-    if: vars.DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
-    environment: production
-    env:
-      DEPLOY_PATH: ${{ vars.DEPLOY_PATH || '/opt/pzc-blog' }}
-      SHA: ${{ needs.build.outputs.sha }}
-      IMAGE: ${{ needs.build.outputs.image }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.build.outputs.sha }}
-
-      - name: 配置 SSH
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
-
-      - name: 同步 compose 文件并更新镜像
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-        run: |
-          remote="$DEPLOY_USER@$DEPLOY_HOST"
-          scp -i ~/.ssh/deploy_key deploy/docker-compose.yml "$remote:$DEPLOY_PATH/docker-compose.yml"
-          ssh -i ~/.ssh/deploy_key "$remote" bash -s <<EOF
-          set -euo pipefail
-          cd "$DEPLOY_PATH"
-          touch .env
-          for kv in "SITE_IMAGE=$IMAGE" "IMAGE_TAG=$SHA"; do
-            key="\${kv%%=*}"
-            if grep -q "^\$key=" .env; then sed -i "s|^\$key=.*|\$kv|" .env; else echo "\$kv" >> .env; fi
-          done
-          docker compose pull site
-          docker compose up -d --remove-orphans
-          docker image prune -f
-          EOF
-
-      - name: 健康检查
-        if: vars.PUBLIC_SITE_URL != ''
-        run: curl -fsS --retry 6 --retry-delay 5 --retry-all-errors -o /dev/null "${{ vars.PUBLIC_SITE_URL }}"
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

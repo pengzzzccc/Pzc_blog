@@ -28,7 +28,7 @@
 @layer base {
   html {
     @apply bg-paper text-neutral-900 antialiased dark:bg-paper-dark dark:text-neutral-100;
-    background-image: url('/textures/paper.svg');
+    background-image: var(--paper-texture);
     background-size: 480px 480px;
     color-scheme: light;
   }

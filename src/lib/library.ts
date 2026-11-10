@@ -2,7 +2,7 @@ import type { ImageMetadata } from 'astro';
 import { getCollection } from 'astro:content';
 import { site } from '../data/site';
 import syncMeta from '../data/steam-sync-meta.json';
-import type { Lang, Localized } from '../i18n/utils';
+import { localizePath, type Lang, type Localized } from '../i18n/utils';
 import { findPost } from './content';
 
 export type LibraryStatus = 'playing' | 'completed' | 'dropped' | 'wishlist' | 'played';
@@ -120,5 +120,5 @@ export async function reviewHref(entry: LibraryEntry, lang: Lang): Promise<strin
   if (!entry.review) return undefined;
   const post = await findPost(entry.review, lang);
   if (!post) return undefined;
-  return post.id.startsWith('en/') ? `/en/blog/${entry.review}/` : `/blog/${entry.review}/`;
+  return localizePath(`/blog/${entry.review}/`, post.id.startsWith('en/') ? 'en' : 'zh');
 }

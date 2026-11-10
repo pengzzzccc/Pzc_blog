@@ -6,7 +6,8 @@ import tailwindcss from '@tailwindcss/vite';
 import { playDevServer } from './scripts/play-dev-server.mjs';
 
 export default defineConfig({
-  site: process.env.PUBLIC_SITE_URL || 'https://example.com',
+  site: process.env.PUBLIC_SITE_URL || 'https://pengzzzccc.github.io',
+  base: process.env.PUBLIC_BASE_PATH || undefined,
   trailingSlash: 'ignore',
   i18n: {
     defaultLocale: 'zh',

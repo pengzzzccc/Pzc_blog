@@ -11,8 +11,9 @@ concurrency:
 
 permissions:
   contents: write
-  # 被调用的 deploy.yml 需要推送镜像，权限不能超过调用方
-  packages: write
+  # 被调用的 deploy.yml 需要部署 GitHub Pages，权限不能超过调用方
+  pages: write
+  id-token: write
 
 jobs:
   sync:

@@ -8,7 +8,7 @@ export async function rssResponse(lang: Lang, site: URL | undefined) {
   return rss({
     title: `${pick(profile.name, lang)} · ${t(lang, 'blog.title')}`,
     description: pick(profile.tagline, lang) || pick(profile.name, lang),
-    site: site ?? 'https://example.com',
+    site: site ?? 'https://pengzzzccc.github.io',
     items: posts.map((post) => ({
       title: post.data.title,
       description: post.data.description,

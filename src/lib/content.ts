@@ -1,5 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { defaultLang, type Lang } from '../i18n/utils';
+import { defaultLang, withBase, type Lang } from '../i18n/utils';
 
 export type Post = CollectionEntry<'blog'>;
 export type Work = CollectionEntry<'games'>;
@@ -72,7 +72,7 @@ export async function getDevlogs(workSlug: string, lang: Lang): Promise<Post[]> 
 }
 
 export function playUrl(work: Work): string {
-  return work.data.play.url ?? `/play/${slugOf(work)}/`;
+  return work.data.play.url ? withBase(work.data.play.url) : withBase(`/play/${slugOf(work)}/`);
 }
 
 /** 构建时校验跨集合的 slug 引用，写错直接让构建失败 */
