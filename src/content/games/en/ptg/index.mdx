@@ -1,0 +1,32 @@
+---
+title: PTG (Procedural Terrain Generation)
+summary: An interactive, seed-driven 3D procedural terrain and planetary generation tool suite built in Unity 6 with a pure C# mathematical core.
+category: tool
+cover: ./cover.png
+engine: unity
+genres: [Procedural Generation, Developer Tool]
+platforms: [Windows]
+role: Solo Developer · Algorithm & Tools Programmer
+team: 1
+period:
+  start: 2026-08-01
+  end: 2026-11-05
+status: completed
+order: 4
+links:
+  - label: GitHub Repository
+    url: https://github.com/pengzzzccc/PTG
+play:
+  type: external
+---
+
+## **Overview**
+
+**PTG** is an interactive, seed-driven 3D procedural terrain generation suite built in Unity 6 for technical artists, level designers, and tools programmers. Its mathematical core is engineered entirely in pure C# with zero engine API dependencies, enabling real-time slider-driven sculpting of reproducible planar landscapes, circular islands, and cube-sphere planets comfortably within a 60 FPS frame budget.
+
+## **Core Features & Engineering Highlights**
+
+- **Pure C# Deterministic Noise and Multifractal Core**: Built the pseudorandom generator, multi-dimensional Perlin gradient noise, and Musgrave multifractal pipelines from scratch without third-party noise libraries. Diagnosed and resolved a vertical-axis lattice dot-product omission to eliminate directional stretching, and engineered shared-edge vertex normal welding across six-face cube-sphere boundaries to eliminate planetary lighting seams.
+- **Multi-Core Parallel Acceleration Within a 60 FPS Budget**: Developed an in-engine stage timing profiler and a standalone web telemetry dashboard. By eliminating redundant collider baking, caching height matrices for fast recolouring, and parallelising row evaluation across CPU cores, median full-regeneration time dropped from **144.8 ms to 10.5 ms** at standard 257×257 resolution (**13.79x speedup**) and from **593.4 ms to 39.5 ms** at 513×513 resolution (**15.02x speedup**), with colour-only updates taking just **0.8 to 1.9 ms**.
+- **UI Toolkit Two-Column Workflow and 32-Bit Mesh Pipeline**: Designed a responsive two-column UI Toolkit interface featuring an 8-layer height-and-slope surface colour system, a custom built-in HSV colour picker, a 3-state wireframe inspection shader, plain-language hover tooltips, and focus-locked input isolation that prevents free-flight camera movement while typing. Dynamically upgraded high-resolution meshes to 32-bit index buffers to surpass the 65,535-vertex limit.
+- **49 Automated Unit Tests and Two-Round Usability Evaluation**: Authored 49 EditMode unit tests enforcing FNV-1a hash seed reproducibility, multifractal energy gradients, wireframe index integrity, and bit-exact floating-point parity between single-threaded and multi-threaded generation. Validated workflow usability across two structured playtesting rounds and three reverse terrain calibration tasks, achieving **8.00 / 10** for interface clarity and **7.14 / 10** for parameter comprehensibility.

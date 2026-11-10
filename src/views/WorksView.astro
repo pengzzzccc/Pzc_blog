@@ -11,6 +11,8 @@ interface Props {
 }
 const { lang } = Astro.props;
 const works = await getWorks(lang);
+const gameWorks = works.filter((w) => w.data.category !== 'tool');
+const toolWorks = works.filter((w) => w.data.category === 'tool');
 const engines = [...new Set(works.map((w) => w.data.engine))];
 const filters = [
   { key: 'all', label: t(lang, 'works.all') },
@@ -44,26 +46,53 @@ const filters = [
     </div>
 
     {works.length === 0 && <p class="text-neutral-600">{t(lang, 'works.empty')}</p>}
-    <div data-works-grid class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {works.map((work) => <WorkCard work={work} lang={lang} />)}
+
+    <div class="space-y-12">
+      {
+        gameWorks.length > 0 && (
+          <section data-works-section>
+            <h2 class="mb-5 text-xl font-bold tracking-wider text-neutral-900 dark:text-neutral-50">{t(lang, 'works.section.game')}</h2>
+            <div data-works-grid class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {gameWorks.map((work) => <WorkCard work={work} lang={lang} />)}
+            </div>
+          </section>
+        )
+      }
+
+      {
+        toolWorks.length > 0 && (
+          <section data-works-section>
+            <h2 class="mb-5 text-xl font-bold tracking-wider text-neutral-900 dark:text-neutral-50">{t(lang, 'works.section.tool')}</h2>
+            <div data-works-grid class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {toolWorks.map((work) => <WorkCard work={work} lang={lang} />)}
+            </div>
+          </section>
+        )
+      }
     </div>
   </div>
 </BaseLayout>
 
 <script>
   const bar = document.querySelector<HTMLElement>('[data-works-filter]');
-  const cards = document.querySelectorAll<HTMLElement>('[data-works-grid] > a');
+  const sections = document.querySelectorAll<HTMLElement>('[data-works-section]');
   bar?.addEventListener('click', (event) => {
     const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-filter]');
     if (!button) return;
     for (const b of bar.querySelectorAll('[data-filter]')) b.setAttribute('aria-pressed', String(b === button));
     const key = button.dataset.filter ?? 'all';
-    for (const card of cards) {
-      const visible =
-        key === 'all' ||
-        (key === 'playable' && card.dataset.playable === 'true') ||
-        (key.startsWith('engine:') && card.dataset.engine === key.slice(7));
-      card.toggleAttribute('data-filter-hidden', !visible);
+    for (const section of sections) {
+      const cards = section.querySelectorAll<HTMLElement>('[data-works-grid] > a');
+      let anyVisible = false;
+      for (const card of cards) {
+        const visible =
+          key === 'all' ||
+          (key === 'playable' && card.dataset.playable === 'true') ||
+          (key.startsWith('engine:') && card.dataset.engine === key.slice(7));
+        card.toggleAttribute('data-filter-hidden', !visible);
+        if (visible) anyVisible = true;
+      }
+      section.toggleAttribute('data-filter-hidden', !anyVisible);
     }
   });
 </script>

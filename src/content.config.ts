@@ -26,6 +26,7 @@ const games = defineCollection({
     z.object({
       title: z.string(),
       summary: z.string(),
+      category: z.enum(['game', 'tool']).default('game'),
       /** 不填时显示作品名标题占位 */
       cover: image().optional(),
       /** 详情页背景/主视觉图（可选） */

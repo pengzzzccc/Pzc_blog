@@ -1,0 +1,52 @@
+---
+title: "PTG: Deterministic Multifractal Terrain Generation, 15x Multi-Core Speedup & Usability Evaluation in Unity 6"
+description: "How I built a pure C# seed-driven multifractal terrain and cube-sphere planet generator in Unity 6, achieved a 13.8x–15.0x parallel speedup within a 60 FPS budget, and validated workflow usability through 49 unit tests and two playtesting rounds."
+pubDate: 2026-11-05
+tags: [unity, csharp, pcg, performance, telemetry, devlog]
+game: ptg
+draft: false
+---
+
+**Project Links**
+- **GitHub Repository**: [https://github.com/pengzzzccc/PTG](https://github.com/pengzzzccc/PTG)
+- **Raw Performance Telemetry Logs**: [https://github.com/pengzzzccc/PTG/tree/main/Evaluation/logs](https://github.com/pengzzzccc/PTG/tree/main/Evaluation/logs)
+- **Automated Unit Test Suite**: [https://github.com/pengzzzccc/PTG/tree/main/Assets/TerrainDemo/Tests/Editor](https://github.com/pengzzzccc/PTG/tree/main/Assets/TerrainDemo/Tests/Editor)
+
+## **1. Research Goals and Decoupled Architecture**
+
+In modern open-world production pipelines, technical artists and level designers rely on random seeds and procedural parameters to block out macro-terrains rapidly. The primary engineering question behind **PTG** was whether a pseudorandom seed-driven multifractal terrain system in Unity 6 could guarantee strict bit-exact determinism while keeping full regeneration inside a **60 FPS single-frame budget (16.7 ms)**, all while remaining intuitive for artists and designers without engineering assistance.
+
+To achieve this, I architected the system across three decoupled layers:
+- **Pure C# Mathematical Core**: Built entirely without Unity engine API or third-party noise library dependencies, implementing a fast splittable pseudorandom number generator, multi-dimensional Perlin gradient noise, and Musgrave multifractal pipelines. By writing the permutation table and lattice evaluations from scratch, I diagnosed and fixed a vertical-axis gradient omission in the dot-product calculation that had caused directional stretching, restoring isotropic terrain surfaces.
+- **Dynamic 32-Bit Mesh Pipeline and Planetary Topologies**: Supports planar landscapes, circular falloff islands, and six-face cube-sphere planets driven by 3D noise. When mesh resolution exceeds 256×256, the pipeline dynamically upgrades Unity's default 16-bit index buffer to 32-bit indices to surpass the 65,535-vertex limit. Across cube-sphere face boundaries, shared edge vertex normals are averaged and welded during mesh stitching to eliminate dark lighting seams.
+- **UI Toolkit Two-Column Interface and Focus Isolation**: Features left-side noise and macro-topology controls alongside a right-side 8-layer height-and-slope colouring panel, a handcrafted HSV colour picker, a 3-state wireframe overlay shader, and plain-language hover tooltips. Navigation event interception and focus locking on the root UI element cleanly isolate typing and slider dragging from free-flight camera movement.
+
+## **2. Data-Driven Profiling and 13.8x to 15.0x Parallel Acceleration**
+
+Rather than guessing where bottlenecks lay, I built an in-engine stage timing profiler and a standalone web telemetry comparison dashboard, recording median timings across 174 terrain generations over 16 test sessions.
+
+Baseline logs exposed three major bottlenecks: serial heightmap calculation, mesh geometry assembly, and an unnecessary 161.1 ms mesh collider bake. I executed a three-stage optimisation strategy:
+- **Removing Redundant Collider Baking**: Eliminated synchronous physics mesh baking during interactive slider sculpting.
+- **Heightmap Caching and Fast Recolouring Path**: When users adjust only surface colours or slope rules, the pipeline bypasses heightmap and mesh regeneration and reuses the cached height matrix, completing recolouring in just **0.8 to 1.9 ms** at 257×257 and **5.1 ms** at 513×513.
+- **Multi-Core Row Parallelisation**: Parallelised heightmap evaluation, vertex assembly, and colour evaluation across CPU worker threads.
+
+| **Pipeline Stage** | **Baseline (257²)** | **Parallel Optimised (257²)** | **Baseline (513²)** | **Parallel Optimised (513²)** |
+|---|---|---|---|---|
+| **Heightmap Calculation** | 58.4 ms | **4.8 ms** | 226.2 ms | **14.3 ms** |
+| **Mesh Geometry Assembly** | 46.2 ms | **1.1 ms** | 194.5 ms | **3.5 ms** |
+| **Vertex Colour Evaluation** | 5.8 ms | **1.7 ms** | 23.4 ms | **6.1 ms** |
+| **GPU Buffer Upload** | 1.8 ms | **1.5 ms** | 9.4 ms | **9.1 ms** |
+| **Normals & Bounds Recalculation** | 2.1 ms | **1.4 ms** | 5.8 ms | **6.5 ms** |
+| **Mesh Collider Baking** | 30.5 ms | **Removed** | 161.1 ms | **Removed** |
+| **Median Total Time** | **144.8 ms** | **10.5 ms** | **593.4 ms** | **39.5 ms** |
+| **Measured Speedup** | 1.0x | **13.79x** | 1.0x | **15.02x** |
+
+At the standard 257×257 resolution (66,049 vertices), median generation time dropped from **144.8 ms to 10.5 ms** (**13.79x speedup**), fitting comfortably within the 16.7 ms single-frame budget for 60 FPS real-time sculpting. At 513×513 resolution (263,169 vertices), generation time fell from **593.4 ms to 39.5 ms** (**15.02x speedup**). Telemetry also revealed that GPU vertex buffer upload (9.1 ms at 513×513) now exceeds CPU mesh assembly (3.5 ms), providing clear empirical justification for migrating future high-resolution pipelines to GPU Compute Shaders.
+
+## **3. 49 Automated Unit Tests and Two-Round Usability Evaluation**
+
+To guarantee mathematical determinism across multi-core execution, I authored **49 EditMode automated unit tests** covering pseudorandom distribution bounds, FNV-1a hash seed reproducibility, multifractal Laplacian energy gradients, circular island masks, cube-sphere vertex budgets, and wireframe index integrity. Five parallel consistency tests confirmed that multi-threaded matrices match single-threaded serial calculations with **bit-exact floating-point precision** at every vertex.
+
+To evaluate workflow usability, I conducted two structured rounds of user playtesting (7 participants, 71.4% without prior procedural generation tool experience):
+- **Quantitative Usability Scores**: On 10-point Likert scales, the tool achieved a mean score of **8.00 / 10 for UI clarity** and **7.14 / 10 for parameter comprehensibility (SD = 0.38)**. Across three unassisted reverse terrain reconstruction tasks (Alpine Lake, Fjord Landscape, and Blue Planet), testers consistently converged on the target octave, terracing, and height-scale parameters.
+- **Closed-Loop Agile Iteration**: Every piece of qualitative tester feedback across both rounds was translated directly into engineering deliverables—including the 3-state wireframe view, plain-language hover tooltips, the custom built-in HSV colour picker, unifying all presets under the Musgrave multifractal pipeline so Offset and Gain sliders respond immediately in every mode, a global shortcut to hide the UI for unobstructed 3D inspection, and macro-topology switching for islands and cube-sphere planets.
