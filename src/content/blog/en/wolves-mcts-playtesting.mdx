@@ -1,24 +1,27 @@
 ---
 title: "Rule Iteration & Automated MCTS Playtesting in Wolves of Wand Street"
-description: "How we evolved Wolves of Wand Street from a 52-card sequential prototype into a 10-minute simultaneous-action area control game, validated by Monte Carlo Tree Search (MCTS) automated playtesting."
+description: "How we evolved Wolves of Wand Street from a sequential prototype into a 10-minute simultaneous-action area control game, validated by Monte Carlo Tree Search automated playtesting."
 pubDate: 2026-06-20
 tags: [tabletop, game-design, mcts, balancing, devlog]
 game: wolves-of-wand-street
 draft: false
 ---
 
-## 1. Evolving the Core Loop: From Sequential Downtime to Simultaneous Action
+**Project Links**
+- **GitHub Repository & Playable Package**: [https://github.com/pengzzzccc/Wolves-of-Wand-Street](https://github.com/pengzzzccc/Wolves-of-Wand-Street)
 
-*Wolves of Wand Street* is a 3–4 player card-driven area-control tabletop game where rival magical investment firms compete for territorial dominance using **Gold**, **Investors**, and **Action Cards**.
+## **1. Evolving the Core Loop: From Sequential Downtime to Simultaneous Action**
 
-Across three major rule iterations (`v1 Original` → `v0.2 Simplified` → `Super Quickplay Simultaneous`), human playtesting revealed that traditional sequential turns created excessive downtime and runaway leader snowballs in a 4-player setting. I redesigned the core turn structure into a **3-round, ~10-minute simultaneous action format** with independent draw piles, keeping every player actively reading opponents and committing resources on every beat.
+**Wolves of Wand Street** is a 3–4 player card-driven area-control tabletop game where rival magical investment firms compete for territorial dominance using **Gold**, **Investors**, and **Action Cards**.
 
-## 2. Automated Rule Validation with Monte Carlo Tree Search (MCTS)
+Across three major rule iterations, human playtesting revealed that traditional sequential turns created excessive downtime and runaway leader snowballs in a 4-player setting. I redesigned the core turn structure into a **3-round, 10-minute simultaneous-action format** with independent draw piles, keeping every player actively reading opponents and committing resources on every beat.
 
-While in-person playtesting was invaluable for evaluating player interaction and table tension, human sessions alone could not exhaustively test edge-case card combinations across 26 distinct card types (such as *Hostile Takeover*, *Market Crash*, *Arcane Recession*, *Mystical Arbitrage*, and *Political Coup*).
+## **2. Automated Rule Validation with Monte Carlo Tree Search**
 
-To rigorously verify numerical balance and rule consistency, I implemented an **automated simulation harness powered by Monte Carlo Tree Search (MCTS)**:
+While in-person playtesting was invaluable for evaluating player interaction and table tension, human sessions alone could not exhaustively test edge-case card combinations across 26 distinct card types.
 
-- **State & Action Encoding**: Modelled the game's 3-round progression, regional control thresholds (*Hamlet*, *City*, *Castle*), Gold/Investor resource pools, and card effects as a deterministic state machine.
-- **Detecting Dominant Strategies**: By running thousands of simulated MCTS self-play matches, we tracked win-rate correlation per card played, first-mover vs. simultaneous resolution fairness, and resource starvation rates.
-- **Data-Driven Rebalancing**: Simulation metrics exposed that early-round *Monopoly* and *Aggressive Expansion* plays created an insurmountable Investor advantage by Round 2. Using these findings, we recalibrated card costs and regional scoring weights so that Round 3 swing cards (*Hostile Negotiation*, *Redeployment*) remained viable counter-play options without invalidating early investments.
+To rigorously verify numerical balance and rule consistency, I implemented an **automated simulation harness powered by Monte Carlo Tree Search**:
+
+- **Deterministic State and Action Encoding**: Modelled the three-round progression, regional control thresholds, Gold and Investor resource pools, and card effects as a fast deterministic state machine.
+- **Detecting Dominant Strategies**: By running thousands of simulated self-play matches, we tracked win-rate correlation per card played, simultaneous resolution fairness, and resource starvation rates.
+- **Data-Driven Rebalancing**: Simulation metrics exposed that early-round economy and expansion plays created an insurmountable Investor advantage by the second round. Using these findings, we recalibrated card costs and regional scoring weights so that final-round counter-play and redeployment cards remained viable without invalidating early investments.

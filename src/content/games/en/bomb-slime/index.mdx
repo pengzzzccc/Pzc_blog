@@ -26,18 +26,18 @@ play:
   type: external
 ---
 
-## Core Gameplay
+## **Core Gameplay**
 
-In *Bomb Slime*, you play a slime that reels bombs in with a **rope gun** to swallow them, then spits them back out as armed projectiles to trigger **chain explosions**. Levels combine breakable walls, zero-gravity floating bombs, timed hazards, and state-restoring checkpoints. Players chain rope swings, wall-smashing dashes, wall slides, and ceiling crawls to traverse rooms at high speed. When you die, the level itself rewinds alongside the player so shattered walls and spent bombs are restored for a clean retry.
+In **Bomb Slime**, you play a slime that reels bombs in with a **rope gun** to swallow them, then spits them back out as armed projectiles to trigger **chain explosions**. Levels combine breakable walls, zero-gravity floating bombs, timed hazards, and state-restoring checkpoints. Players chain rope swings, wall-smashing dashes, wall slides, and ceiling crawls to traverse rooms at high speed. When you die, the level itself rewinds alongside the player so shattered walls and spent bombs are restored for a clean retry.
 
-## My Role (Team of 5)
+## **My Role**
 
-As **Lead Designer, Lead Programmer, and Level Designer**, I owned the core mechanics, runtime system architecture, and playtest telemetry toolchain:
+Working in a **5-person team** as **Lead Designer, Lead Programmer, and Level Designer**, I owned the core mechanics, runtime system architecture, and playtest telemetry toolchain:
 
-- **Decoupled Event-Bus Architecture (8 Static Buses + Directors)**: Architected eight domain event buses (`PlayerBus`, `LifeBus`, `ItemBus`, `HazardBus`, `FxBus`, `RopeGunBus`, `LevelBus`, `UiBus`) to decouple gameplay simulation from presentation directors (`FxDirector` for screen shake/hit-stop/zoom, `AudioDirector` with priority voice pooling, `HapticsDirector` for gamepad rumble and DualSense adaptive triggers, and `DeathDirector`/`RespawnDirector`).
-- **Composable Interactable Framework & State Rewind**: Built a modular `Interactable` node system composed of orthogonal parts (`ExplodePart`, `BreakablePart`, `CarriablePart`, `FloatablePart`, `RestorablePart`, `HarmOnTouch`), paired with a `LevelMemento` system that snapshots and rewinds all `IRestorable` entities upon checkpoint respawn, and an `UnstuckSolver` to recover players wedged in geometry.
-- **Playtest Telemetry & Visual Level Testing Suite (`PerfLog Viewer` & Scene Overlay)**: Engineered an in-game `PerformanceRecorder` (logging Git-stamped CSVs of movement trajectories, death coordinates/causes, mechanic usage, frame times, and per-checkpoint segment stats) alongside a standalone web analytics dashboard (**PerfLog Viewer**) and an in-editor **PerfLog Scene Overlay** that renders death heatmaps, lethality contours, ghost replays, and difficulty curves directly over exported level art.
+- **Decoupled Event-Bus Architecture**: Architected eight domain-specific static event buses to decouple gameplay simulation from presentation directors. Gameplay systems emit pure domain events while dedicated presentation controllers handle screen shake, hit-stop, camera zoom punches, priority-pooled 3D spatial audio across desktop and WebGL, gamepad rumble and adaptive trigger haptics, and death/respawn sequences.
+- **Composable Interactable Framework and State Rewind**: Built a modular interactable object framework assembled from orthogonal components for detonation, breakable terrain, rope-reel carrying and swallowing, zero-gravity knockback, and state restoration. Paired this with a memento-based checkpoint snapshot system that rewinds the entire room state upon respawn, and an automated geometry recovery solver that frees players wedged into terrain during high-speed dashes or blasts.
+- **Playtest Telemetry and Visual Level Analytics Suite**: Engineered an in-game telemetry recorder that logs Git-stamped CSV data covering player trajectories, death coordinates and causes, mechanic usage, frame times, and per-checkpoint segment metrics. Built a standalone offline web analytics dashboard and a matching Unity Editor scene view overlay that render death heatmaps, lethality contours, ghost replays, and difficulty curves directly over exported level art.
 
-## Tech Stack
+## **Tech Stack**
 
-Unity 6 (6000.4.10f1) · C# · URP (2D Renderer) · Unity Input System (full Keyboard/Mouse & Gamepad rebinding) · UI Toolkit · Unity Test Framework (EditMode Unit Tests) · ECharts (PerfLog Viewer)
+Unity 6 · C# · URP 2D Renderer · Unity Input System · UI Toolkit · Unity Test Framework · ECharts

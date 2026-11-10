@@ -1,43 +1,44 @@
 ---
 title: "Event-Bus Architecture, Composable Interactables & Playtest Telemetry in Bomb Slime"
-description: "How we decoupled gameplay simulation from presentation using eight static event buses, built a composable interactable framework with checkpoint state rewind, and engineered the PerfLog Viewer telemetry suite."
+description: "How we decoupled gameplay simulation from presentation using static event buses, built a composable interactable framework with checkpoint state rewind, and engineered our playtest telemetry suite."
 pubDate: 2026-10-25
 tags: [unity, csharp, architecture, telemetry, devlog]
 game: bomb-slime
 draft: false
 ---
 
-## 1. Decoupling Gameplay Simulation from Presentation via Eight Event Buses
+**Project & Tool Links**
+- **Playable Build**: [https://pengzzzccc.itch.io/bombslime](https://pengzzzccc.itch.io/bombslime)
+- **GitHub Repository**: [https://github.com/pengzzzccc/BombSlime](https://github.com/pengzzzccc/BombSlime)
+- **Telemetry Viewer Tool**: [https://github.com/pengzzzccc/BombSlime/tree/main/Inform_comp3151/Docs/Tool/PerfLogViewer](https://github.com/pengzzzccc/BombSlime/tree/main/Inform_comp3151/Docs/Tool/PerfLogViewer)
 
-In a fast-paced 2D platformer like *Bomb Slime*, a single bomb detonation triggers a cascade of side effects: chain-detonating nearby bombs, shattering breakable walls, applying knockback to zero-gravity floating bombs, shaking the camera, triggering hit-stop, playing 3D spatial audio, and firing DualSense adaptive-trigger haptics.
+## **1. Decoupling Gameplay Simulation from Presentation via Event Buses**
 
-To prevent tight coupling between physics simulation and presentation systems across our 5-person team, I architected **eight domain-specific static event buses** (`PlayerBus`, `LifeBus`, `ItemBus`, `HazardBus`, `FxBus`, `RopeGunBus`, `LevelBus`, and `UiBus`). Gameplay components only raise domain events, while dedicated **Director** classes subscribe to them:
+In a fast-paced 2D platformer like **Bomb Slime**, a single bomb detonation triggers a cascade of side effects: chain-detonating nearby bombs, shattering breakable walls, applying knockback to zero-gravity floating bombs, shaking the camera, triggering hit-stop, playing 3D spatial audio, and firing adaptive-trigger haptics.
 
-- **`FxDirector`** listens to `HazardBus.Blast` and dispatches screen shake, hit-stop, and camera zoom punch events to `CamHandler` and `GameTimeController`.
-- **`AudioDirector`** subscribes to `Hazard`, `Item`, `Life`, `Player`, and `RopeGun` buses, routing spatial sound cues through priority-based voice pooling (`AudioService`) compatible with both desktop and WebGL backends.
-- **`HapticsDirector`** translates gameplay events into gamepad rumble and DualSense trigger resistance.
-- **`DeathDirector` & `RespawnDirector`** listen to `LifeBus.Died` and `LifeBus.Respawned` to execute cause-specific death strategies (burn, crush, shatter) and restore level state.
+To prevent tight coupling between physics simulation and presentation systems across our **5-person team**, I architected **eight domain-specific static event buses**. Gameplay components only raise pure domain events, while dedicated presentation directors subscribe to them:
 
-## 2. Composable Interactable Framework & Checkpoint State Rewind (`LevelMemento`)
+- **Visual Effects Director**: Listens to blast and impact events to dispatch screen shake, hit-stop, and camera zoom punches.
+- **Spatial Audio Director**: Subscribes to hazard, item, life, player, and rope-gun buses, routing spatial sound cues through priority-based voice pooling compatible with both desktop and WebGL backends.
+- **Haptics Director**: Translates gameplay events into gamepad rumble and DualSense adaptive trigger resistance.
+- **Death and Respawn Directors**: Listen to player death and checkpoint events to execute cause-specific death presentations and restore level state.
 
-Rather than relying on deep inheritance hierarchies for level objects, every hazard, pickup, and destructible in *Bomb Slime* is an `Interactable` node assembled from orthogonal parts (`Assets/Code/Interactable/Parts/`):
+## **2. Composable Interactable Framework and Checkpoint State Rewind**
 
-- `ExplodePart`: handles contact, hazard, armed-impact, and chain-reaction detonation.
-- `BreakablePart`: shatters terrain when caught in a blast radius.
-- `CarriablePart`: allows the player to reel a bomb in with the rope gun, swallow it into `PlayerInventory`, and spit it out armed.
-- `FloatablePart`: zero-gravity physics knocked in 8 directions by blasts or contact.
-- `RestorablePart`: registers the entity with `LevelMemento`.
+Rather than relying on deep inheritance hierarchies for level objects, every hazard, pickup, and destructible in **Bomb Slime** is an interactable node assembled from orthogonal components:
 
-Because *Bomb Slime*'s puzzles rely on consuming bombs and destroying walls, dying mid-room could leave a puzzle unsolvable if only the player respawned. I implemented **`LevelMemento`** on the persistent `GameManager`, which captures snapshots of all `IRestorable` entities upon scene entry and checkpoint activation (`LifeBus.CheckpointSet`), cleanly rolling back the entire room state on `LifeBus.Respawned`. In addition, I wrote **`UnstuckSolver`** to detect when high-speed dashes or explosions wedge the player inside collider geometry, nudging them to the nearest safe spot or safely returning them to the active checkpoint.
+- **Detonation Component**: Handles contact, hazard, armed-impact, and chain-reaction explosions.
+- **Breakable Component**: Shatters terrain when caught within an active blast radius.
+- **Carriable Component**: Allows the player to reel a bomb in with the rope gun, swallow it into inventory, and spit it back out armed.
+- **Zero-Gravity Floating Component**: Enables eight-directional knockback from blasts or player contact for aerial puzzle chains.
+- **Restorable Component**: Registers the entity with the room state manager for checkpoint rollback.
 
-## 3. Data-Driven Playtesting: `PerformanceRecorder` & `PerfLog Viewer`
+Because puzzles in **Bomb Slime** rely on consuming bombs and destroying walls, dying mid-room would leave a puzzle unsolvable if only the player respawned. I implemented a **memento-based checkpoint snapshot system** on the persistent game manager that captures the state of all restorable entities upon scene entry and checkpoint activation, rolling back the entire room cleanly on respawn. I also built an **automated geometry recovery solver** that detects when high-speed dashes or explosions wedge the player inside terrain colliders, nudging them to the nearest safe spot or returning them safely to the active checkpoint.
+
+## **3. Data-Driven Playtesting and Offline Telemetry Suite**
 
 To evaluate level pacing and identify frustrating choke points during playtesting, I built a complete offline telemetry pipeline:
 
-1. **In-Game `PerformanceRecorder`**: Records periodic player position/velocity samples alongside `#E-schema` event rows (`death`, `respawn`, `checkpoint`, `segment`, `unstuck`), stamped with the active Git branch and commit hash.
-2. **Standalone Web Analytics (`PerfLog Viewer`)**: A zero-dependency static web application (`Docs/Tool/PerfLogViewer/`) where designers drag and drop `perf_*.csv` logs onto exported level art (`Export Level Layouts + Art`) to inspect:
-   - **Death Heatmaps & Lethality Contours** (deaths divided by lives passing through a tile).
-   - **Mechanic Usage Overlays** (wall slide, ceiling stick, rope gun, airborne trajectories) and **Ghost Replays**.
-   - **Checkpoint Segment Matrix**: per-segment attempt counts, first-try clear rates, median clear times, and respawn-trap detection.
-   - **Performance Diagnostics**: synchronised FPS, frame-time spike, and GC allocation charts.
-3. **Unity In-Editor `PerfLog Scene Overlay`**: Renders the exact same death markers, heatmaps, and trajectories directly inside the Unity Scene View so level designers can adjust hazard placement in place.
+- **In-Game Telemetry Recorder**: Records periodic player position and velocity samples alongside structured event rows for deaths, respawns, checkpoints, segment completions, and unstuck interventions, automatically stamped with the active Git branch and commit hash.
+- **Standalone Web Analytics Viewer**: A zero-dependency static web dashboard where designers drag and drop telemetry logs onto exported level art to inspect death heatmaps, lethality contours, mechanic usage overlays, ghost replays, per-segment clear rates, respawn traps, and synchronised FPS, frame-time spike, and memory allocation charts.
+- **Unity In-Editor Scene Overlay**: Renders the exact same death markers, heatmaps, and player trajectories directly inside the Unity Scene View so level designers can iterate on hazard placement in place.

@@ -4,8 +4,8 @@ summary: A first-person museum puzzle vertical slice where you play a night cura
 engine: unity
 genres: [First-Person Puzzle, Exploration]
 platforms: [Windows]
-role: Solo Developer (Architecture · First-Person Controller · UI Toolkit)
-team: 1
+role: Lead Programmer · Core Architecture · Foundational UI · Sceptre Mechanics · Automated Testing · Code Review
+team: 6
 period:
   start: 2026-08-01
 status: prototype
@@ -17,15 +17,13 @@ play:
   type: external
 ---
 
-## Overview
+## **Overview**
 
-*Unknown Technology* is a first-person museum puzzle game vertical slice built in Unity 6000.4. You play a night curator investigating missing technology relics across three exhibition eras—Ancient, Modern, and Future—and restoring them with a sceptre.
+**Unknown Technology** is a first-person museum puzzle game vertical slice built in Unity 6 by a **6-person team**. Players step into the role of a night curator investigating missing technology relics across Ancient, Modern, and Future exhibition halls and restoring them with a sceptre. As **Lead Programmer**, I created the foundational game architecture, built the core UI framework, implemented the sceptre mechanics, established the automated testing workflow and engineering standards, and reviewed all code submitted by team members.
 
-## Architecture & Technical Highlights
+## **Core Responsibilities & Technical Highlights**
 
-The runtime is intentionally compact (~1,100 lines of clean C#) and engineered around structural state safety and accessibility:
-
-- **Five-Phase Guarded State Machine (`Game.cs`)**: A central phase machine (`Boot → MainMenu → Loading → Exploring ⇄ Paused`) governs scene transitions and game lifecycle through guarded transition methods (`SetPhase`, `TryPause`, `TryResume`).
-- **Structural Input Action-Map Routing (`GameBootstrap.cs`)**: Routes Unity Input System actions and enables exactly one Action Map (`Gameplay`, `Restoration`, or `UI`) per phase—disabling gameplay input structurally when paused rather than relying on scattered boolean checks. Supports seamless Keyboard/Mouse and Gamepad hot-switching with automatic pause and reconnect notices on controller disconnect.
-- **UI Toolkit & Accessibility Persistence (`GameSettings.cs`)**: Built with UXML/USS and focus-based gamepad navigation, featuring live settings for UI scale (`100%–150%`), independent mouse/gamepad sensitivity, Y-axis inversion, and a **Reduced Motion** mode that suppresses camera head-bob, persisted to `Data/settings.json`.
-- **Automated Scene & Prefab Generator (`SceneBuilder`)**: Custom Unity Editor tooling (`Unknown Technology → Build Scenes`) that programmatically generates prefabs, all five scenes, and synchronises the Build Settings list in one click.
+- **Foundational Game Architecture and Cross-Scene Persistence**: Created a guarded five-phase state machine and centralised event system governing boot, main menu, asynchronous scene loading, exploration, and pause flows. Isolated input action maps by game phase to prevent gameplay input bleed while paused, with seamless keyboard, mouse, and gamepad switching and automatic pause notices on controller disconnect. Engineered an atomic three-slot save system that captures and silently restores the exact pose and slot state of every relic and gate across exhibition eras.
+- **Foundational UI Framework and Accessibility**: Built the main menu, save-slot management flow, era HUD, pause overlay, and live settings menu using Unity UI Toolkit with focus-based gamepad navigation. Implemented persistent accessibility and control options including UI scaling, independent mouse and gamepad sensitivity, Y-axis inversion, and a reduced motion mode that suppresses camera and sceptre head-bob.
+- **Sceptre Telekinesis and Anti-Clipping Physics**: Implemented the first-person sceptre aiming, beam rendering, and telekinetic relic carrying system. Replaced raw transform teleportation with velocity-driven continuous dynamic rigidbodies, line-of-sight obstruction breaking, and swept slot-snapping validation so carried relics never clip through walls or snap across solid geometry.
+- **Automated Testing Workflow, Coding Standards and Code Review**: Established a clean project structure and coding standards, built an automated unit test suite covering phase transitions, settings persistence, and save serialisation using the Unity Test Framework, and created one-click editor scene generation tooling. Reviewed all teammate pull requests across puzzle mechanics, NPC quizzes, audio, and environment interactions to ensure architectural consistency and clean merges.
