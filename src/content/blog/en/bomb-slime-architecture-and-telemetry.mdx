@@ -1,0 +1,43 @@
+---
+title: "Event-Bus Architecture, Composable Interactables & Playtest Telemetry in Bomb Slime"
+description: "How we decoupled gameplay simulation from presentation using eight static event buses, built a composable interactable framework with checkpoint state rewind, and engineered the PerfLog Viewer telemetry suite."
+pubDate: 2026-10-25
+tags: [unity, csharp, architecture, telemetry, devlog]
+game: bomb-slime
+draft: false
+---
+
+## 1. Decoupling Gameplay Simulation from Presentation via Eight Event Buses
+
+In a fast-paced 2D platformer like *Bomb Slime*, a single bomb detonation triggers a cascade of side effects: chain-detonating nearby bombs, shattering breakable walls, applying knockback to zero-gravity floating bombs, shaking the camera, triggering hit-stop, playing 3D spatial audio, and firing DualSense adaptive-trigger haptics.
+
+To prevent tight coupling between physics simulation and presentation systems across our 5-person team, I architected **eight domain-specific static event buses** (`PlayerBus`, `LifeBus`, `ItemBus`, `HazardBus`, `FxBus`, `RopeGunBus`, `LevelBus`, and `UiBus`). Gameplay components only raise domain events, while dedicated **Director** classes subscribe to them:
+
+- **`FxDirector`** listens to `HazardBus.Blast` and dispatches screen shake, hit-stop, and camera zoom punch events to `CamHandler` and `GameTimeController`.
+- **`AudioDirector`** subscribes to `Hazard`, `Item`, `Life`, `Player`, and `RopeGun` buses, routing spatial sound cues through priority-based voice pooling (`AudioService`) compatible with both desktop and WebGL backends.
+- **`HapticsDirector`** translates gameplay events into gamepad rumble and DualSense trigger resistance.
+- **`DeathDirector` & `RespawnDirector`** listen to `LifeBus.Died` and `LifeBus.Respawned` to execute cause-specific death strategies (burn, crush, shatter) and restore level state.
+
+## 2. Composable Interactable Framework & Checkpoint State Rewind (`LevelMemento`)
+
+Rather than relying on deep inheritance hierarchies for level objects, every hazard, pickup, and destructible in *Bomb Slime* is an `Interactable` node assembled from orthogonal parts (`Assets/Code/Interactable/Parts/`):
+
+- `ExplodePart`: handles contact, hazard, armed-impact, and chain-reaction detonation.
+- `BreakablePart`: shatters terrain when caught in a blast radius.
+- `CarriablePart`: allows the player to reel a bomb in with the rope gun, swallow it into `PlayerInventory`, and spit it out armed.
+- `FloatablePart`: zero-gravity physics knocked in 8 directions by blasts or contact.
+- `RestorablePart`: registers the entity with `LevelMemento`.
+
+Because *Bomb Slime*'s puzzles rely on consuming bombs and destroying walls, dying mid-room could leave a puzzle unsolvable if only the player respawned. I implemented **`LevelMemento`** on the persistent `GameManager`, which captures snapshots of all `IRestorable` entities upon scene entry and checkpoint activation (`LifeBus.CheckpointSet`), cleanly rolling back the entire room state on `LifeBus.Respawned`. In addition, I wrote **`UnstuckSolver`** to detect when high-speed dashes or explosions wedge the player inside collider geometry, nudging them to the nearest safe spot or safely returning them to the active checkpoint.
+
+## 3. Data-Driven Playtesting: `PerformanceRecorder` & `PerfLog Viewer`
+
+To evaluate level pacing and identify frustrating choke points during playtesting, I built a complete offline telemetry pipeline:
+
+1. **In-Game `PerformanceRecorder`**: Records periodic player position/velocity samples alongside `#E-schema` event rows (`death`, `respawn`, `checkpoint`, `segment`, `unstuck`), stamped with the active Git branch and commit hash.
+2. **Standalone Web Analytics (`PerfLog Viewer`)**: A zero-dependency static web application (`Docs/Tool/PerfLogViewer/`) where designers drag and drop `perf_*.csv` logs onto exported level art (`Export Level Layouts + Art`) to inspect:
+   - **Death Heatmaps & Lethality Contours** (deaths divided by lives passing through a tile).
+   - **Mechanic Usage Overlays** (wall slide, ceiling stick, rope gun, airborne trajectories) and **Ghost Replays**.
+   - **Checkpoint Segment Matrix**: per-segment attempt counts, first-try clear rates, median clear times, and respawn-trap detection.
+   - **Performance Diagnostics**: synchronised FPS, frame-time spike, and GC allocation charts.
+3. **Unity In-Editor `PerfLog Scene Overlay`**: Renders the exact same death markers, heatmaps, and trajectories directly inside the Unity Scene View so level designers can adjust hazard placement in place.

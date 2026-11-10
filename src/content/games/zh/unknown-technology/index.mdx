@@ -1,0 +1,31 @@
+---
+title: Unknown Technology
+summary: 第一人称博物馆解谜游戏原型：扮演夜间策展人，跨越古代、现代与未来三个展厅修复失落的科技遗物。
+engine: unity
+genres: [第一人称解谜, 探索]
+platforms: [Windows]
+role: 独立开发（系统架构 · 角色控制 · UI Toolkit）
+team: 1
+period:
+  start: 2026-08-01
+status: prototype
+order: 3
+links:
+  - label: GitHub 仓库
+    url: https://github.com/pengzzzccc/Play_though_history
+play:
+  type: external
+---
+
+## 关于项目
+
+《Unknown Technology》是一款基于 Unity 6 构建的第一人称博物馆解谜游戏垂直切片（Vertical Slice）。玩家扮演一名夜间策展人，在古代（Ancient）、现代（Modern）与未来（Future）三个时代的展厅中调查失踪的科技遗物，并使用权杖将其复原。
+
+## 核心技术与架构亮点
+
+整个运行时由约 1,100 行高内聚、扁平化的 C# 代码构成，专注于清晰的状态管理与无障碍交互体验：
+
+- **五阶段受保护状态机（`Game.cs`）**：通过静态状态机统一管理 `Boot → MainMenu → Loading → Exploring ⇄ Paused` 状态流转与异步场景加载，所有状态切换均通过受保护方法（`SetPhase` / `TryPause` / `TryResume`）执行。
+- **输入动作图谱结构化隔离（`GameBootstrap.cs`）**：基于 Unity Input System 按游戏阶段动态启停唯一的 Action Map（`Gameplay` / `Restoration` / `UI`），从架构层面杜绝暂停时的输入穿透，并支持键鼠与手柄无缝自动切换及手柄断连自动暂停提示。
+- **UI Toolkit 与无障碍设置持久化（`GameSettings.cs`）**：使用 UXML / USS 构建响应式界面，支持 100%–150% UI 缩放、鼠标/手柄独立灵敏度、Y 轴反转以及减弱动态效果（Reduced Motion，自动抑制第一人称视角摇晃 Head-bob），设置持久化为本地 JSON。
+- **一键场景构建器（`SceneBuilder`）**：编写 Unity 编辑器扩展脚本，一键生成 Bootstrap、主菜单及三大时代展厅场景与 Prefab，并自动同步 Build Settings。

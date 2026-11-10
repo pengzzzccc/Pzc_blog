@@ -4,33 +4,40 @@ summary: 2D 高速机动平台跳跃游戏：扮演一只能吞下炸弹、再�
 cover: ./cover.png
 banner: ./draft.jpg
 engine: unity
-genres: [平台跳跃]
+genres: [平台跳跃, 动作解谜]
 platforms: [Web, Windows]
 role: 主策划 · 主程序 · 关卡设计
+team: 5
 period:
   start: 2026-07-01
-status: in-development
+  end: 2026-10-31
+status: released
+featured: true
 order: 1
+trailer: https://www.youtube.com/watch?v=gXnMhvs6244
 links:
   - label: 在 itch.io 试玩
     url: https://pengzzzccc.itch.io/bombslime
-  - label: GitHub
+  - label: GitHub 仓库
     url: https://github.com/pengzzzccc/BombSlime
+  - label: PerfLog Viewer 遥测工具
+    url: https://github.com/pengzzzccc/BombSlime/tree/main/Inform_comp3151/Docs/Tool/PerfLogViewer
 play:
   type: external
 ---
 
-## 玩法
+## 核心玩法
 
-你扮演一只史莱姆：吞下炸弹，再把它吐出去引发连锁爆炸。关卡中可以使用绳索枪和蹬墙冲刺高速移动，死亡时关卡会回溯。
+在《Bomb Slime》中，你扮演一只能利用**绳索枪（Rope Gun）**将炸弹拉回吞下、再吐出去引发**连锁爆炸（Chain Detonation）**的史莱姆。关卡由可破坏墙体、零重力浮空炸弹、定时机关与检查点构成。玩家可以结合绳索摆荡、破墙冲刺（Dash）、蹬墙跳与天花板吸附实现高速机动；死亡时不仅玩家重生，整个关卡的破坏状态与已消耗炸弹也会通过快照机制完整回溯。
 
-## 我的职责
+## 我的职责（5 人团队）
 
-我担任主策划，负责主程序与关卡设计。
+我担任项目的**主策划、主程序与关卡设计**，主导核心机制设计、底层系统架构与全链路测试分析工具链搭建：
 
-- **核心玩法设计与系统实现**：主导设计并实现游戏的核心玩法，包括玩家的基础移动机制与环境交互反馈。
-- **技术架构与工具搭建**：基于 Unity 独立搭建项目的主要技术框架，开发了模块化场景交互组件、基于事件响应的玩家控制系统，以及可视化关卡测试工具。
+- **事件驱动架构（8 条静态事件总线 + Director 模式）**：设计并实现 `PlayerBus`、`LifeBus`、`ItemBus`、`HazardBus`、`FxBus`、`RopeGunBus`、`LevelBus` 与 `UiBus`，将底层玩法逻辑与表现层（镜头震动/帧冻结 `FxDirector`、3D 空间音效池 `AudioDirector`、手柄震动与 DualSense 自适应扳机 `HapticsDirector`、死亡与检查点重生 `DeathDirector` / `RespawnDirector`）彻底解耦。
+- **可组合交互物框架（Composable Interactable Parts）**：将炸弹、可破坏物与机关抽象为由正交组件拼装的 `Interactable` 节点（`ExplodePart`、`BreakablePart`、`CarriablePart`、`FloatablePart`、`RestorablePart`、`HarmOnTouch` 等），并在 `GameManager` 上实现基于备忘录模式的 `LevelMemento`，在死亡重生时零开销回滚全场景状态，同时编写 `UnstuckSolver` 解决高速运动卡墙边界问题。
+- **Playtest 遥测与可视化关卡分析工具（PerfLog Viewer & Scene Overlay）**：开发游戏内 `PerformanceRecorder`（记录带 Git 分支/提交戳的周期采样、死亡坐标、致死源、绳索/移动状态及检查点分段耗时 CSV），配套构建离线 Web 分析器 **PerfLog Viewer**（支持实景关卡底图叠加死亡热力、致死率、停留热力、玩家动线幽灵回放、检查点分段难度曲线及 FPS/GC 联动分析）以及 Unity 编辑器内的 `PerfLog Scene Overlay` 与自动化世界校验工具。
 
-## 技术
+## 技术栈
 
-Unity 6 · URP（2D Renderer）· Input System · UI Toolkit
+Unity 6 (6000.4.10f1) · C# · URP (2D Renderer) · Input System（支持键鼠与手柄热切换及按键重绑）· UI Toolkit · Unity Test Framework (EditMode Tests) · ECharts (PerfLog Viewer)

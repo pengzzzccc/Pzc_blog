@@ -1,0 +1,43 @@
+---
+title: "《Bomb Slime》事件总线架构、可组合交互物框架与 PerfLog 遥测工具链"
+description: "复盘如何在 5 人团队中通过 8 条静态事件总线解耦玩法与表现层、用组合组件与备忘录模式实现关卡回溯，以及搭建离线可视化关卡遥测工具 PerfLog Viewer。"
+pubDate: 2026-10-25
+tags: [unity, csharp, architecture, telemetry, devlog]
+game: bomb-slime
+draft: false
+---
+
+## 1. 用 8 条静态事件总线解耦玩法模拟与表现层
+
+在《Bomb Slime》这样节奏紧凑的 2D 平台跳跃游戏中，一次炸弹爆炸会同时触发连锁引爆、墙体破碎、浮空炸弹受击位移、屏幕震动、帧冻结（Hit-stop）、3D 空间音效以及手柄自适应扳机震动。
+
+为了让 5 人团队在并行开发时互不阻塞，我设计了 **8 条按领域划分的静态事件总线**（`PlayerBus`、`LifeBus`、`ItemBus`、`HazardBus`、`FxBus`、`RopeGunBus`、`LevelBus`、`UiBus`）。玩法逻辑只负责抛出领域事件，由各 **Director** 订阅并驱动表现层：
+
+- **`FxDirector`**：监听 `HazardBus.Blast`，向 `CamHandler` 与 `GameTimeController` 派发震屏、顿帧与镜头缩放冲击。
+- **`AudioDirector`**：监听交互物、生命、玩家与绳索枪事件，通过带优先级与并发上限的 `AudioService` 声音池播放 3D 空间音效（同时兼容桌面端与 WebGL）。
+- **`HapticsDirector`**：将玩法事件转化为手柄震动与 DualSense 自适应扳机反馈。
+- **`DeathDirector` 与 `RespawnDirector`**：监听 `LifeBus.Died` 与 `LifeBus.Respawned`，执行按死因分类的死亡表现并触发检查点回溯。
+
+## 2. 可组合交互物框架与检查点全场景回溯（`LevelMemento`）
+
+为了避免深层继承树带来的维护负担，游戏中的所有炸弹、可破坏物与机关都统一为 `Interactable` 节点，由正交的功能部件（`Assets/Code/Interactable/Parts/`）自由拼装：
+
+- `ExplodePart`：处理接触、危险物触发、吐出后碰撞引爆以及连锁爆炸。
+- `BreakablePart`：处于爆炸范围内时触发破碎。
+- `CarriablePart`：支持被绳索枪拉回吞入背包（`PlayerInventory`）并再次吐出。
+- `FloatablePart`：零重力部件，可被爆炸气浪或玩家朝 8 个方向击飞。
+- `RestorablePart`：将节点注册到场景回溯管理器。
+
+由于关卡解谜依赖消耗炸弹与炸开墙壁，若玩家死亡后仅重置角色位置，会导致残局无法继续。我在 `GameManager` 上实现了基于备忘录模式的 **`LevelMemento`**：在进入房间及激活检查点（`LifeBus.CheckpointSet`）时捕获所有 `IRestorable` 对象的快照，并在 `LifeBus.Respawned` 时一键回滚整间房间的状态。此外还编写了 **`UnstuckSolver`**，当高速冲刺或爆炸将玩家卡入地形碰撞体时自动搜索附近安全点推出或传回检查点。
+
+## 3. 数据驱动的关卡调优：`PerformanceRecorder` 与 `PerfLog Viewer`
+
+为了在玩家测试（Playtesting）中量化评估关卡节奏与卡关痛点，我开发了一套完整的离线遥测与可视化工具链：
+
+1. **内置录制器 `PerformanceRecorder`**：以固定采样率记录玩家坐标与速度，并以 `#E-schema` 注释行写入 `death`、`respawn`、`checkpoint`、`segment` 与 `unstuck` 事件，自动附带当前 Git 分支与 Commit 哈希。
+2. **离线网页分析器 `PerfLog Viewer`**：无需安装或联网，将导出的关卡实景图（`Export Level Layouts + Art`）与玩家 `perf_*.csv` 拖入页面，即可查看：
+   - **死亡热力图与致死率等值线**（死亡次数 ÷ 经过该格的命数）。
+   - **机制使用分布**（滑墙、吸顶、绳索、空中动线）与 **幽灵回放（Ghost Replay）**。
+   - **检查点分段矩阵**：统计每一段的尝试次数、首次通过率、中位耗时与重生陷阱。
+   - **性能联动分析**：FPS、帧时间尖峰（Spike）与 GC 分配折线联动缩放。
+3. **Unity 编辑器内叠加 `PerfLog Scene Overlay`**：将相同的死亡点、热力图与动线直接绘制在 Unity Scene 视图的真实关卡美术之上，方便关卡策划边看数据边改地形。

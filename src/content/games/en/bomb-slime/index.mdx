@@ -4,33 +4,40 @@ summary: A fast 2D platformer where you play a slime that swallows bombs and spi
 cover: ./cover.png
 banner: ./draft.jpg
 engine: unity
-genres: [Platformer]
+genres: [Platformer, Action Puzzle]
 platforms: [Web, Windows]
-role: Lead designer · Lead programmer · Level design
+role: Lead Designer · Lead Programmer · Level Design
+team: 5
 period:
   start: 2026-07-01
-status: in-development
+  end: 2026-10-31
+status: released
+featured: true
 order: 1
+trailer: https://www.youtube.com/watch?v=gXnMhvs6244
 links:
   - label: Play on itch.io
     url: https://pengzzzccc.itch.io/bombslime
-  - label: GitHub
+  - label: GitHub Repository
     url: https://github.com/pengzzzccc/BombSlime
+  - label: PerfLog Viewer Tool
+    url: https://github.com/pengzzzccc/BombSlime/tree/main/Inform_comp3151/Docs/Tool/PerfLogViewer
 play:
   type: external
 ---
 
-## Gameplay
+## Core Gameplay
 
-You play a slime that swallows bombs and spits them back out to set off chain explosions. A rope gun and wall dashes let you move through levels at speed, and levels rewind when you die.
+In *Bomb Slime*, you play a slime that reels bombs in with a **rope gun** to swallow them, then spits them back out as armed projectiles to trigger **chain explosions**. Levels combine breakable walls, zero-gravity floating bombs, timed hazards, and state-restoring checkpoints. Players chain rope swings, wall-smashing dashes, wall slides, and ceiling crawls to traverse rooms at high speed. When you die, the level itself rewinds alongside the player so shattered walls and spent bombs are restored for a clean retry.
 
-## My role
+## My Role (Team of 5)
 
-I am the lead designer, and I also handle lead programming and level design.
+As **Lead Designer, Lead Programmer, and Level Designer**, I owned the core mechanics, runtime system architecture, and playtest telemetry toolchain:
 
-- **Core gameplay design and systems**: led the design and implementation of the core gameplay, including the player's basic movement and feedback from interacting with the environment.
-- **Technical architecture and tools**: built the project's main technical framework in Unity on my own, including modular scene interaction components, an event-driven player control system and a visual level testing tool.
+- **Decoupled Event-Bus Architecture (8 Static Buses + Directors)**: Architected eight domain event buses (`PlayerBus`, `LifeBus`, `ItemBus`, `HazardBus`, `FxBus`, `RopeGunBus`, `LevelBus`, `UiBus`) to decouple gameplay simulation from presentation directors (`FxDirector` for screen shake/hit-stop/zoom, `AudioDirector` with priority voice pooling, `HapticsDirector` for gamepad rumble and DualSense adaptive triggers, and `DeathDirector`/`RespawnDirector`).
+- **Composable Interactable Framework & State Rewind**: Built a modular `Interactable` node system composed of orthogonal parts (`ExplodePart`, `BreakablePart`, `CarriablePart`, `FloatablePart`, `RestorablePart`, `HarmOnTouch`), paired with a `LevelMemento` system that snapshots and rewinds all `IRestorable` entities upon checkpoint respawn, and an `UnstuckSolver` to recover players wedged in geometry.
+- **Playtest Telemetry & Visual Level Testing Suite (`PerfLog Viewer` & Scene Overlay)**: Engineered an in-game `PerformanceRecorder` (logging Git-stamped CSVs of movement trajectories, death coordinates/causes, mechanic usage, frame times, and per-checkpoint segment stats) alongside a standalone web analytics dashboard (**PerfLog Viewer**) and an in-editor **PerfLog Scene Overlay** that renders death heatmaps, lethality contours, ghost replays, and difficulty curves directly over exported level art.
 
-## Tech
+## Tech Stack
 
-Unity 6 · URP (2D Renderer) · Input System · UI Toolkit
+Unity 6 (6000.4.10f1) · C# · URP (2D Renderer) · Unity Input System (full Keyboard/Mouse & Gamepad rebinding) · UI Toolkit · Unity Test Framework (EditMode Unit Tests) · ECharts (PerfLog Viewer)

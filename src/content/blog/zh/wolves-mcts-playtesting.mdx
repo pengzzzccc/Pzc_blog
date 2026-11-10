@@ -1,0 +1,24 @@
+---
+title: "《Wolves of Wand Street》规则演进与 MCTS 蒙特卡洛树搜索自动化平衡测试"
+description: "记录如何将 3-4 人区域控制桌游从顺序回合制迭代为 10 分钟同时行动机制，并通过 MCTS 算法模拟数千局对战验证卡牌数值平衡。"
+pubDate: 2026-06-20
+tags: [tabletop, game-design, mcts, balancing, devlog]
+game: wolves-of-wand-street
+draft: false
+---
+
+## 1. 核心循环演进：从顺序回合等待到同时行动博弈
+
+《Wolves of Wand Street》是一款面向 3–4 名玩家的卡牌驱动区域控制桌游，玩家调配 **金币（Gold）**、**投资者（Investors）** 与 **手牌（Action Cards）** 争夺领地控制权。
+
+在历经三个大版本迭代（`v1 Original` → `v0.2 Simplified` → `Super Quickplay Simultaneous`）的过程中，早期真人测试反映出 4 人顺序回合制存在等待时间过长、滚雪球效应明显的问题。我主导将回合结构重构为 **共 3 轮、单局约 10 分钟的同时行动（Simultaneous Action）模式**，并为每位玩家配置独立抽牌堆，大幅提升了心理博弈密度与单局重开率。
+
+## 2. 基于 MCTS（蒙特卡洛树搜索）的自动化规则与数值验证
+
+真人测试非常适合检验桌面氛围与心理博弈，但面对 26 种功能各异的卡牌（如 *Hostile Takeover*、*Market Crash*、*Arcane Recession*、*Mystical Arbitrage*、*Political Coup*），仅靠人工对局难以穷举极端卡牌组合与数值漏洞。
+
+为此，我基于游戏规则编写了 **MCTS（Monte Carlo Tree Search）自动化测试模拟器**：
+
+- **状态机建模**：将 3 轮回合流程、不同等级领地（*Hamlet*、*City*、*Castle*）的控制权结算、金币/投资者资源池与卡牌效果抽象为确定性状态转移系统。
+- **强势策略与死局检测**：通过运行数千局 MCTS 自博弈模拟，统计各单卡打出后的胜率偏离度、同时结算优先级公平性以及资源卡死率。
+- **数据驱动的数值调优**：模拟数据暴露出早期打出 *Monopoly* 与 *Aggressive Expansion* 会在第 2 轮形成难以逆转的投资者数量碾压。我们据此精确调整了卡牌费用与区域计分权重，使第 3 轮的战术反制卡（如 *Hostile Negotiation*、*Redeployment*）具备合理的翻盘空间。

@@ -1,0 +1,31 @@
+---
+title: Unknown Technology
+summary: A first-person museum puzzle vertical slice where you play a night curator restoring lost technology relics across Ancient, Modern, and Future exhibition eras.
+engine: unity
+genres: [First-Person Puzzle, Exploration]
+platforms: [Windows]
+role: Solo Developer (Architecture · First-Person Controller · UI Toolkit)
+team: 1
+period:
+  start: 2026-08-01
+status: prototype
+order: 3
+links:
+  - label: GitHub Repository
+    url: https://github.com/pengzzzccc/Play_though_history
+play:
+  type: external
+---
+
+## Overview
+
+*Unknown Technology* is a first-person museum puzzle game vertical slice built in Unity 6000.4. You play a night curator investigating missing technology relics across three exhibition eras—Ancient, Modern, and Future—and restoring them with a sceptre.
+
+## Architecture & Technical Highlights
+
+The runtime is intentionally compact (~1,100 lines of clean C#) and engineered around structural state safety and accessibility:
+
+- **Five-Phase Guarded State Machine (`Game.cs`)**: A central phase machine (`Boot → MainMenu → Loading → Exploring ⇄ Paused`) governs scene transitions and game lifecycle through guarded transition methods (`SetPhase`, `TryPause`, `TryResume`).
+- **Structural Input Action-Map Routing (`GameBootstrap.cs`)**: Routes Unity Input System actions and enables exactly one Action Map (`Gameplay`, `Restoration`, or `UI`) per phase—disabling gameplay input structurally when paused rather than relying on scattered boolean checks. Supports seamless Keyboard/Mouse and Gamepad hot-switching with automatic pause and reconnect notices on controller disconnect.
+- **UI Toolkit & Accessibility Persistence (`GameSettings.cs`)**: Built with UXML/USS and focus-based gamepad navigation, featuring live settings for UI scale (`100%–150%`), independent mouse/gamepad sensitivity, Y-axis inversion, and a **Reduced Motion** mode that suppresses camera head-bob, persisted to `Data/settings.json`.
+- **Automated Scene & Prefab Generator (`SceneBuilder`)**: Custom Unity Editor tooling (`Unknown Technology → Build Scenes`) that programmatically generates prefabs, all five scenes, and synchronises the Build Settings list in one click.
