@@ -23,13 +23,3 @@ Personal portfolio and blog website of **Peng Zhanci**, focused on Game Design (
 
 ---
 
-## Features
-
-- **About / Hero**: Personal introduction, background timeline, skills, and social links.
-- **Portfolio (Works)**: Showcase of game projects with support for playable Web builds, itch.io links, and integrated devlogs.
-- **Blog**: Technical articles, game dev logs, and long-form reviews with bilingual support and tag filtering.
-- **Game Library**: Curated collection of played games, integrating automatic Steam sync with custom reviews and ratings.
-- **Bilingual (i18n)**: Full English and Simplified Chinese support with seamless language switching.
-- **Dark / Light Theme**: Clean paper-textured aesthetic with system/manual theme toggle.
-
----
