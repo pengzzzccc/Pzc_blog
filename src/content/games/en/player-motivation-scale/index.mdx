@@ -1,0 +1,45 @@
+---
+title: Player Motivation Assessment Scale Study
+summary: A 42-item player research study covering 6 motivation categories and 12 dimensions, paired with a key-gated interactive questionnaire, instant radar visualization, and CSV/PNG export.
+category: research
+engine: other
+genres: [Player Research, Telemetry Scale, UX Study]
+platforms: [Web]
+role: Research Design & Interactive Survey Engineering
+team: 1
+period:
+  start: 2026-11-01
+status: in-development
+order: 5
+links:
+  - label: Open Assessment Survey (Key Required)
+    url: /surveys/player-motivation/
+  - label: All Surveys
+    url: /surveys/
+play:
+  type: external
+---
+
+## **Research Goal**
+
+During gameplay prototyping and balance tuning, backend telemetry alone rarely explains why players gravitate toward certain loops. This **Player Motivation Assessment Scale Study** pairs standardized player-profile variables with a 12-dimension subjective motivation framework, making it easier to cross-reference self-reported player drivers against playtest behavior and target-audience assumptions.
+
+## **Scale Architecture (42 Items)**
+
+The instrument is organized into two structured sections:
+
+- **Part 1 · Player Profile & Calibration (Q01–Q06)**: Captures preferred input devices (keyboard and mouse or controller), primary gaming platforms (PC, console, handheld, mobile), average bi-weekly playtime over the past two months, and demographic brackets, followed by an intuitive-response confirmation check before the scale items begin.
+- **Part 2 · 6-Category, 12-Dimension Core Scale (Q07–Q42)**: Uses a 5-point Likert scale (1 = Strongly disagree, 5 = Strongly agree) with three balanced items per dimension, averaged into final 1.00–5.00 dimension scores:
+  - **Escape**: Excitement & Thrills vs. Thinking & Puzzles.
+  - **Exploration**: Collecting vs. Discovery.
+  - **Expression**: Customization vs. Roleplay & Story.
+  - **Management**: Resource Allocation vs. Strategic Planning.
+  - **Mastery**: Reaching Milestones vs. Skill Improvement.
+  - **Social**: Competition vs. Cooperation.
+
+## **Interactive Survey & Export Pipeline**
+
+The live questionnaire runs directly inside the site's new **Surveys** section behind a participant access key gate:
+
+- **Instant 12-Axis Radar Visualization**: Upon submission, the browser computes arithmetic means across all 12 dimensions, highlights the respondent's top three drivers, and renders a theme-aware 12-axis SVG radar chart alongside a 6-category summary.
+- **One-Click CSV & PNG Export**: Respondents and researchers can export both raw item-by-item responses plus computed dimension scores as UTF-8 CSV files and download high-DPI PNG snapshots of the radar chart for offline analysis and playtest reports.

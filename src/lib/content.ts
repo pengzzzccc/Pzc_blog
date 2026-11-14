@@ -3,6 +3,7 @@ import { defaultLang, withBase, type Lang } from '../i18n/utils';
 
 export type Post = CollectionEntry<'blog'>;
 export type Work = CollectionEntry<'games'>;
+export type Survey = CollectionEntry<'surveys'>;
 
 /** 条目 id 形如 `zh/hello-world`，拆成语言和 slug */
 export function splitId(id: string): { lang: Lang; slug: string } {
@@ -75,6 +76,15 @@ export function playUrl(work: Work): string {
   return work.data.play.url ? withBase(work.data.play.url) : withBase(`/play/${slugOf(work)}/`);
 }
 
+// ---------- 调研 ----------
+
+export async function getSurveys(): Promise<Survey[]> {
+  const surveys = await getCollection('surveys');
+  return surveys.sort(
+    (a, b) => a.data.order - b.data.order || b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
+  );
+}
+
 /** 构建时校验跨集合的 slug 引用，写错直接让构建失败 */
 export async function assertReferences(): Promise<void> {
   const workSlugs = new Set((await getCollection('games')).map(slugOf));
@@ -88,6 +98,11 @@ export async function assertReferences(): Promise<void> {
   for (const item of await getCollection('library')) {
     if (item.data.review && !postSlugs.has(item.data.review)) {
       errors.push(`library/${item.id}: review "${item.data.review}" 不存在`);
+    }
+  }
+  for (const survey of await getCollection('surveys')) {
+    if (survey.data.relatedWork && !workSlugs.has(survey.data.relatedWork)) {
+      errors.push(`surveys/${survey.id}: relatedWork "${survey.data.relatedWork}" 不存在`);
     }
   }
   if (errors.length) throw new Error(`内容引用错误：\n${errors.join('\n')}`);

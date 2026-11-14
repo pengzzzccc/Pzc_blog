@@ -1,0 +1,753 @@
+{
+  "title": {
+    "zh": "玩家内驱力评估问卷（42 题 / 12 维度）",
+    "en": "Player Motivation Assessment Scale (42 Items / 12 Dimensions)"
+  },
+  "summary": {
+    "zh": "基于 6 大动机类别与 12 个细分维度的玩家数据采集量表。填写完成后即时生成 12 维内驱力雷达图，并支持一键导出 CSV 与雷达图 PNG。",
+    "en": "A 42-item player research questionnaire covering 6 motivation categories and 12 dimensions. Generates an instant 12-axis radar chart with one-click CSV and PNG export."
+  },
+  "status": "active",
+  "category": {
+    "zh": "玩家研究量表",
+    "en": "Player Research Scale"
+  },
+  "estimatedMinutes": 6,
+  "relatedWork": "player-motivation-scale",
+  "order": 1,
+  "publishedAt": "2026-11-15",
+  "accessGate": {
+    "enabled": true,
+    "sha256": "9f6441a21aa2897353a3550cce19d40f7bec420b1a0d96873809fcefbcf18d1b",
+    "hint": {
+      "zh": "请联系研究者获取本次调研的参与密钥。",
+      "en": "Please contact the researcher for the participant access key."
+    }
+  },
+  "sections": [
+    {
+      "id": "profile",
+      "title": {
+        "zh": "基础信息与作答校准（Q01–Q06）",
+        "en": "Player Profile & Guidelines (Q01–Q06)"
+      },
+      "description": {
+        "zh": "用于对后续 12 维度内驱力数据进行设备、平台与游玩时长分组。",
+        "en": "Used to group motivation scores by input device, platform, playtime, and demographics."
+      },
+      "questions": [
+        {
+          "id": "Q01",
+          "code": "Q01",
+          "type": "multi-choice",
+          "required": true,
+          "text": {
+            "zh": "习惯使用的输入设备（多选）",
+            "en": "Preferred input device(s) (Select all that apply)"
+          },
+          "options": [
+            { "value": "kb-mouse", "label": { "zh": "键鼠", "en": "Keyboard & Mouse" } },
+            { "value": "controller", "label": { "zh": "手柄", "en": "Controller" } }
+          ]
+        },
+        {
+          "id": "Q02",
+          "code": "Q02",
+          "type": "multi-choice",
+          "required": true,
+          "text": {
+            "zh": "常玩的游戏平台（多选）",
+            "en": "Gaming platform(s) you play on (Select all that apply)"
+          },
+          "options": [
+            { "value": "pc", "label": { "zh": "PC", "en": "PC" } },
+            { "value": "console", "label": { "zh": "主机（PS / Xbox）", "en": "Console (PS / Xbox)" } },
+            { "value": "handheld", "label": { "zh": "掌机（开源 / Win / Switch）", "en": "Handheld (Switch / Windows / Retro)" } },
+            { "value": "mobile", "label": { "zh": "手机", "en": "Mobile" } }
+          ]
+        },
+        {
+          "id": "Q03",
+          "code": "Q03",
+          "type": "single-choice",
+          "required": true,
+          "text": {
+            "zh": "过去两个月每两周的平均游戏时长",
+            "en": "Average playtime every two weeks over the past two months"
+          },
+          "options": [
+            { "value": "lt-10", "label": { "zh": "低于 10 小时", "en": "Under 10 hours" } },
+            { "value": "11-30", "label": { "zh": "11–30 小时", "en": "11–30 hours" } },
+            { "value": "31-60", "label": { "zh": "31–60 小时", "en": "31–60 hours" } },
+            { "value": "60+", "label": { "zh": "60 小时以上", "en": "60+ hours" } }
+          ]
+        },
+        {
+          "id": "Q04",
+          "code": "Q04",
+          "type": "single-choice",
+          "required": true,
+          "text": {
+            "zh": "年纪",
+            "en": "Age group"
+          },
+          "options": [
+            { "value": "lt-20", "label": { "zh": "低于 20 岁", "en": "Under 20" } },
+            { "value": "20-25", "label": { "zh": "20–25 岁", "en": "20–25" } },
+            { "value": "26-35", "label": { "zh": "26–35 岁", "en": "26–35" } },
+            { "value": "35+", "label": { "zh": "35 岁以上", "en": "35+" } },
+            { "value": "prefer-not", "label": { "zh": "不想透露", "en": "Prefer not to say" } }
+          ]
+        },
+        {
+          "id": "Q05",
+          "code": "Q05",
+          "type": "single-choice",
+          "required": true,
+          "text": {
+            "zh": "性别",
+            "en": "Gender"
+          },
+          "options": [
+            { "value": "male", "label": { "zh": "男", "en": "Male" } },
+            { "value": "female", "label": { "zh": "女", "en": "Female" } },
+            { "value": "non-binary", "label": { "zh": "非二元", "en": "Non-binary" } },
+            { "value": "prefer-not", "label": { "zh": "不想透露", "en": "Prefer not to say" } }
+          ]
+        },
+        {
+          "id": "Q06",
+          "code": "Q06",
+          "type": "single-choice",
+          "required": true,
+          "text": {
+            "zh": "以下的所有问题都请在看到问题的第一时间做出一个感性的判断（1 = 非常不符合，5 = 非常符合）。",
+            "en": "For all following statements, please make an intuitive judgment based on your immediate reaction (1 = Strongly disagree, 5 = Strongly agree)."
+          },
+          "options": [
+            {
+              "value": "ack",
+              "label": {
+                "zh": "我已了解作答规则，开始凭直觉作答",
+                "en": "I understand the guidelines and am ready to answer intuitively"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "escape",
+      "title": {
+        "zh": "一、解脱 · 感官刺激与逻辑解谜（Q07–Q12）",
+        "en": "1. Escape · Excitement & Puzzles (Q07–Q12)"
+      },
+      "questions": [
+        {
+          "id": "Q07",
+          "code": "Q07",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "escape-excitement",
+          "text": {
+            "zh": "我喜欢节奏极快、高风险且让人肾上腺素飙升的游戏体验（如极限躲避、高速竞速或紧张的战斗）。",
+            "en": "I enjoy fast-paced, high-stakes gameplay that gives an adrenaline rush (such as tight dodging, high-speed racing, or intense combat)."
+          }
+        },
+        {
+          "id": "Q08",
+          "code": "Q08",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "escape-excitement",
+          "text": {
+            "zh": "华丽的视听演出、强烈的打击感以及爽快的即时反馈，是吸引我玩下去的重要原因。",
+            "en": "Flashy visuals and audio, strong hit impact, and snappy instant feedback are major reasons I keep playing."
+          }
+        },
+        {
+          "id": "Q09",
+          "code": "Q09",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "escape-excitement",
+          "text": {
+            "zh": "玩游戏时，我非常看重那种能让我全神贯注、心跳加速的感官刺激。",
+            "en": "When playing games, I strongly value sensory excitement that keeps me fully locked in and gets my heart racing."
+          }
+        },
+        {
+          "id": "Q10",
+          "code": "Q10",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "escape-puzzle",
+          "text": {
+            "zh": "我很享受通过观察环境、分析机制或逻辑推理来破解谜题的过程。",
+            "en": "I enjoy solving puzzles by observing the environment, analyzing mechanics, or using logical reasoning."
+          }
+        },
+        {
+          "id": "Q11",
+          "code": "Q11",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "escape-puzzle",
+          "text": {
+            "zh": "弄懂一套复杂的系统规则，并利用规则规律找到最优解，会给我带来极大的满足感。",
+            "en": "Figuring out a complex set of rules and using them to find the optimal solution gives me great satisfaction."
+          }
+        },
+        {
+          "id": "Q12",
+          "code": "Q12",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "escape-puzzle",
+          "text": {
+            "zh": "相比于纯靠反应速度，我更喜欢需要动脑筋思考、“灵光一现”才能过关的玩法。",
+            "en": "Compared to pure reflexes, I prefer gameplay that challenges me to think and reward an 'aha' moment."
+          }
+        }
+      ]
+    },
+    {
+      "id": "exploration",
+      "title": {
+        "zh": "二、探险 · 收藏与发现（Q13–Q18）",
+        "en": "2. Exploration · Collecting & Discovery (Q13–Q18)"
+      },
+      "questions": [
+        {
+          "id": "Q13",
+          "code": "Q13",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "exploration-collection",
+          "text": {
+            "zh": "看到图鉴、成就列表或背包里的空缺被一步步填满，会让我感到非常舒适和满足。",
+            "en": "Seeing empty slots in a codex, achievement list, or inventory gradually filled in feels deeply satisfying to me."
+          }
+        },
+        {
+          "id": "Q14",
+          "code": "Q14",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "exploration-collection",
+          "text": {
+            "zh": "我愿意为了获取一件稀有道具、限定外观或隐藏收集品而反复刷取或投入额外时间。",
+            "en": "I am willing to grind or invest extra time to obtain a rare item, limited cosmetic, or hidden collectible."
+          }
+        },
+        {
+          "id": "Q15",
+          "code": "Q15",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "exploration-collection",
+          "text": {
+            "zh": "在游戏中“拥有”大量独特物品或全收集的达成感，是我重要的游玩动力。",
+            "en": "Owning a large collection of unique items or reaching 100% completion is a key motivator for me."
+          }
+        },
+        {
+          "id": "Q16",
+          "code": "Q16",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "exploration-discovery",
+          "text": {
+            "zh": "面对地图上的未探索区域或迷雾，我总有一种想去揭开它全貌的强烈冲动。",
+            "en": "When I see unexplored areas or fog of war on a map, I feel a strong urge to uncover all of it."
+          }
+        },
+        {
+          "id": "Q17",
+          "code": "Q17",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "exploration-discovery",
+          "text": {
+            "zh": "我喜欢在主线任务之外四处闲逛，寻找开发者藏在角落里的彩蛋、支线或隐藏房间。",
+            "en": "I enjoy wandering off the main path to look for easter eggs, side quests, or hidden rooms."
+          }
+        },
+        {
+          "id": "Q18",
+          "code": "Q18",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "exploration-discovery",
+          "text": {
+            "zh": "高自由度的探索体验和充满未知奇遇的游戏世界，比明确的线性指引更吸引我。",
+            "en": "An open world full of unknown surprises appeals to me more than strict, linear guidance."
+          }
+        }
+      ]
+    },
+    {
+      "id": "expression",
+      "title": {
+        "zh": "三、表现 · 个性化与角色代入（Q19–Q24）",
+        "en": "3. Expression · Customization & Roleplay (Q19–Q24)"
+      },
+      "questions": [
+        {
+          "id": "Q19",
+          "code": "Q19",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "expression-customization",
+          "text": {
+            "zh": "我会在捏脸、角色穿搭、武器涂装或家园建造上花费大量时间，让它符合我的审美。",
+            "en": "I spend a lot of time on character creation, outfits, weapon skins, or base building to match my personal taste."
+          }
+        },
+        {
+          "id": "Q20",
+          "code": "Q20",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "expression-customization",
+          "text": {
+            "zh": "即使某些外观或装饰品不提供任何数值加成，我也非常乐意去获取和搭配它们。",
+            "en": "Even if cosmetics or decorations give zero stat bonuses, I still happily collect and style them."
+          }
+        },
+        {
+          "id": "Q21",
+          "code": "Q21",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "expression-customization",
+          "text": {
+            "zh": "我希望自己在游戏里的形象、流派配置或建造作品是独一无二、能体现个人风格的。",
+            "en": "I want my in-game appearance, build, or creations to feel unique and reflect my personal style."
+          }
+        },
+        {
+          "id": "Q22",
+          "code": "Q22",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "expression-roleplay",
+          "text": {
+            "zh": "我很容易代入主角的身份，并随着剧情的起伏与游戏中的角色产生真实的情感共鸣。",
+            "en": "I easily step into the protagonist's shoes and feel genuine emotional connection with the characters as the story unfolds."
+          }
+        },
+        {
+          "id": "Q23",
+          "code": "Q23",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "expression-roleplay",
+          "text": {
+            "zh": "宏大自洽的世界观设定、丰满的人物塑造以及动人的故事线，是我选择一款游戏的首要标准。",
+            "en": "Cohesive worldbuilding, rich characters, and a moving story are my top criteria when choosing a game."
+          }
+        },
+        {
+          "id": "Q24",
+          "code": "Q24",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "expression-roleplay",
+          "text": {
+            "zh": "在面对剧情分支选择时，我倾向于遵循角色性格或内心的道德感去做决定，而不仅仅看奖励好坏。",
+            "en": "When making narrative choices, I follow my character's personality or personal values rather than just picking the best reward."
+          }
+        }
+      ]
+    },
+    {
+      "id": "management",
+      "title": {
+        "zh": "四、管理 · 资源分配与战略规划（Q25–Q30）",
+        "en": "4. Management · Resource & Strategy (Q25–Q30)"
+      },
+      "questions": [
+        {
+          "id": "Q25",
+          "code": "Q25",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "management-resource",
+          "text": {
+            "zh": "我喜欢精打细算，在有限的金币、体力、行动点或背包空间中做出最划算的分配取舍。",
+            "en": "I enjoy carefully budgeting limited gold, stamina, action points, or inventory space to make the most efficient trade-offs."
+          }
+        },
+        {
+          "id": "Q26",
+          "code": "Q26",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "management-resource",
+          "text": {
+            "zh": "面对“强化 A 就会放弃 B”的短中期资源博弈时，权衡利弊并承担机会成本的过程让我觉得很有趣。",
+            "en": "When upgrading A means giving up B in the short to medium term, weighing pros, cons, and opportunity cost feels fun to me."
+          }
+        },
+        {
+          "id": "Q27",
+          "code": "Q27",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "management-resource",
+          "text": {
+            "zh": "我很享受通过合理的运营与资源周转，让手头的资源发挥出最大效益。",
+            "en": "I enjoy managing economy and resource flow smoothly to squeeze maximum value out of what I have."
+          }
+        },
+        {
+          "id": "Q28",
+          "code": "Q28",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "management-strategy",
+          "text": {
+            "zh": "在游玩过程中，我习惯提前规划好中后期的科技树路线、养成顺序或全局发展蓝图。",
+            "en": "While playing, I like planning my mid-to-late-game tech tree, build progression, or overall blueprint in advance."
+          }
+        },
+        {
+          "id": "Q29",
+          "code": "Q29",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "management-strategy",
+          "text": {
+            "zh": "我喜欢做长线布局，通过预判几步甚至几个阶段后的局势变化来建立优势。",
+            "en": "I enjoy long-term positioning, anticipating how things will unfold several turns or stages ahead to gain an advantage."
+          }
+        },
+        {
+          "id": "Q30",
+          "code": "Q30",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "management-strategy",
+          "text": {
+            "zh": "看着自己提前制定的长期计划在游戏后期一步步兑现，会让我获得很强的掌控感。",
+            "en": "Watching a long-term plan I set up early pay off step by step in the late game gives me a strong sense of control."
+          }
+        }
+      ]
+    },
+    {
+      "id": "mastery",
+      "title": {
+        "zh": "五、精通 · 里程碑与技巧精进（Q31–Q36）",
+        "en": "5. Mastery · Milestones & Skill (Q31–Q36)"
+      },
+      "questions": [
+        {
+          "id": "Q31",
+          "code": "Q31",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "mastery-milestone",
+          "text": {
+            "zh": "打通一个高难度章节、升到满级或达到某个段位节点，会给我带来强烈的“阶段性胜利”快感。",
+            "en": "Clearing a tough chapter, hitting max level, or reaching a ranked tier gives me a strong rush of milestone victory."
+          }
+        },
+        {
+          "id": "Q32",
+          "code": "Q32",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "mastery-milestone",
+          "text": {
+            "zh": "我喜欢有清晰目标指引和明确进度条的设计，每完成一个里程碑都会激励我继续推进。",
+            "en": "I like clear objectives and visible progress bars; finishing each milestone motivates me to push further."
+          }
+        },
+        {
+          "id": "Q33",
+          "code": "Q33",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "mastery-milestone",
+          "text": {
+            "zh": "当遇到卡关时，一想到“只要过了这一关就能解锁新阶段 / 拿到通关勋章”，我就会更有动力坚持。",
+            "en": "When stuck on a stage, knowing that beating it unlocks the next phase or earns a completion badge keeps me going."
+          }
+        },
+        {
+          "id": "Q34",
+          "code": "Q34",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "mastery-skill",
+          "text": {
+            "zh": "我享受从“手忙脚乱”到“行云流水”的过程，愿意为了练好一个连招或技巧反复练习。",
+            "en": "I enjoy progressing from clumsy to effortless execution and willingly practice repeatedly to master a combo or technique."
+          }
+        },
+        {
+          "id": "Q35",
+          "code": "Q35",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "mastery-skill",
+          "text": {
+            "zh": "失败后，我喜欢复盘自己的操作失误或决策漏洞，并尝试在下一次做得更精准。",
+            "en": "After a defeat, I like reviewing my mechanical mistakes or bad calls so I can execute more cleanly next time."
+          }
+        },
+        {
+          "id": "Q36",
+          "code": "Q36",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "mastery-skill",
+          "text": {
+            "zh": "相比于靠数值碾压过关，我更喜欢凭借自身操作水平和意识的提升去战胜强敌。",
+            "en": "Rather than out-statting enemies, I prefer beating tough foes by improving my own mechanics and game sense."
+          }
+        }
+      ]
+    },
+    {
+      "id": "social",
+      "title": {
+        "zh": "六、社交 · 竞争与合作（Q37–Q42）",
+        "en": "6. Social · Competition & Cooperation (Q37–Q42)"
+      },
+      "questions": [
+        {
+          "id": "Q37",
+          "code": "Q37",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "social-competition",
+          "text": {
+            "zh": "在竞技对抗中击败对手、冲上排行榜前列，会让我感到非常兴奋和自豪。",
+            "en": "Defeating opponents in competitive matches and climbing near the top of the leaderboard makes me feel excited and proud."
+          }
+        },
+        {
+          "id": "Q38",
+          "code": "Q38",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "social-competition",
+          "text": {
+            "zh": "我会在意自己与好友或全服玩家之间的战绩、通关速度或练度对比。",
+            "en": "I pay attention to how my match record, clear times, or progression compares against friends or the broader player base."
+          }
+        },
+        {
+          "id": "Q39",
+          "code": "Q39",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "social-competition",
+          "text": {
+            "zh": "高强度的玩家间博弈、胜负悬念以及“证明自己比别人更强”的欲望，能极大地激发我的斗志。",
+            "en": "High-intensity PvP mind games, close outcomes, and proving I am better than others strongly fuel my competitive drive."
+          }
+        },
+        {
+          "id": "Q40",
+          "code": "Q40",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "social-cooperation",
+          "text": {
+            "zh": "我喜欢和队友明确分工、语音配合，靠团队协作攻克单人难以完成的挑战。",
+            "en": "I enjoy clear role division and voice coordination with teammates to overcome challenges too hard to clear solo."
+          }
+        },
+        {
+          "id": "Q41",
+          "code": "Q41",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "social-cooperation",
+          "text": {
+            "zh": "在公会、联机小队或社区中帮助其他玩家、互换资源，会让我觉得游戏更有温度。",
+            "en": "Helping other players and trading resources in a guild, squad, or community makes a game feel much warmer to me."
+          }
+        },
+        {
+          "id": "Q42",
+          "code": "Q42",
+          "type": "likert-scale",
+          "required": true,
+          "dimension": "social-cooperation",
+          "text": {
+            "zh": "相比于一个人默默单机，我更享受和朋友一起开黑、分享喜悦的归属感。",
+            "en": "Compared to playing silently alone, I prefer teaming up with friends and sharing the fun and sense of belonging."
+          }
+        }
+      ]
+    }
+  ],
+  "scoring": {
+    "type": "radar",
+    "scaleMin": 1,
+    "scaleMax": 5,
+    "dimensions": [
+      {
+        "id": "escape-excitement",
+        "category": "escape",
+        "categoryLabel": { "zh": "解脱", "en": "Escape" },
+        "name": { "zh": "刺激与兴奋", "en": "Excitement & Thrills" },
+        "shortLabel": { "zh": "刺激兴奋", "en": "Excitement" },
+        "questions": ["Q07", "Q08", "Q09"],
+        "formula": "(Q07 + Q08 + Q09) / 3",
+        "description": {
+          "zh": "偏好高速动作、强烈打击感与即时感官反馈带来的肾上腺素体验。",
+          "en": "Driven by fast pacing, visceral impact, and high-energy sensory feedback."
+        }
+      },
+      {
+        "id": "escape-puzzle",
+        "category": "escape",
+        "categoryLabel": { "zh": "解脱", "en": "Escape" },
+        "name": { "zh": "思维与解谜", "en": "Thinking & Puzzles" },
+        "shortLabel": { "zh": "思维解谜", "en": "Puzzles" },
+        "questions": ["Q10", "Q11", "Q12"],
+        "formula": "(Q10 + Q11 + Q12) / 3",
+        "description": {
+          "zh": "偏好拆解复杂规则、观察环境线索并用逻辑推理求解最优方案。",
+          "en": "Driven by dissecting system rules, pattern observation, and logical deduction."
+        }
+      },
+      {
+        "id": "exploration-collection",
+        "category": "exploration",
+        "categoryLabel": { "zh": "探险", "en": "Exploration" },
+        "name": { "zh": "收藏宝物", "en": "Collecting" },
+        "shortLabel": { "zh": "收藏宝物", "en": "Collecting" },
+        "questions": ["Q13", "Q14", "Q15"],
+        "formula": "(Q13 + Q14 + Q15) / 3",
+        "description": {
+          "zh": "从填满图鉴、完成全收集与获取稀有道具中获得强满足感。",
+          "en": "Motivated by completing codex entries, achievements, and rare item sets."
+        }
+      },
+      {
+        "id": "exploration-discovery",
+        "category": "exploration",
+        "categoryLabel": { "zh": "探险", "en": "Exploration" },
+        "name": { "zh": "发现新世界", "en": "Discovery" },
+        "shortLabel": { "zh": "发现世界", "en": "Discovery" },
+        "questions": ["Q16", "Q17", "Q18"],
+        "formula": "(Q16 + Q17 + Q18) / 3",
+        "description": {
+          "zh": "享受揭开地图迷雾、寻找隐藏房间与自由探索未知区域的惊喜感。",
+          "en": "Motivated by clearing fog of war, finding secrets, and open-ended exploration."
+        }
+      },
+      {
+        "id": "expression-customization",
+        "category": "expression",
+        "categoryLabel": { "zh": "表现", "en": "Expression" },
+        "name": { "zh": "个性化与美化", "en": "Customization" },
+        "shortLabel": { "zh": "个性美化", "en": "Customize" },
+        "questions": ["Q19", "Q20", "Q21"],
+        "formula": "(Q19 + Q20 + Q21) / 3",
+        "description": {
+          "zh": "重视外观搭配、角色造型、建造创造与独一无二的个人风格表达。",
+          "en": "Motivated by visual styling, building, and expressing a distinct identity."
+        }
+      },
+      {
+        "id": "expression-roleplay",
+        "category": "expression",
+        "categoryLabel": { "zh": "表现", "en": "Expression" },
+        "name": { "zh": "角色扮演与情感", "en": "Roleplay & Story" },
+        "shortLabel": { "zh": "角色情感", "en": "Roleplay" },
+        "questions": ["Q22", "Q23", "Q24"],
+        "formula": "(Q22 + Q23 + Q24) / 3",
+        "description": {
+          "zh": "注重世界观自洽、角色塑造、剧情沉浸与符合人物性格的分支抉择。",
+          "en": "Motivated by worldbuilding, character empathy, and immersive narrative choices."
+        }
+      },
+      {
+        "id": "management-resource",
+        "category": "management",
+        "categoryLabel": { "zh": "管理", "en": "Management" },
+        "name": { "zh": "资源分配", "en": "Resource Allocation" },
+        "shortLabel": { "zh": "资源分配", "en": "Resources" },
+        "questions": ["Q25", "Q26", "Q27"],
+        "formula": "(Q25 + Q26 + Q27) / 3",
+        "description": {
+          "zh": "享受在有限资源与机会成本约束下进行精算取舍与高效周转。",
+          "en": "Motivated by budgeting scarce resources, opportunity cost, and economy tuning."
+        }
+      },
+      {
+        "id": "management-strategy",
+        "category": "management",
+        "categoryLabel": { "zh": "管理", "en": "Management" },
+        "name": { "zh": "战略计划", "en": "Strategic Planning" },
+        "shortLabel": { "zh": "战略计划", "en": "Strategy" },
+        "questions": ["Q28", "Q29", "Q30"],
+        "formula": "(Q28 + Q29 + Q30) / 3",
+        "description": {
+          "zh": "习惯提前布局科技树、养成路线与长期局势，追求全局掌控感。",
+          "en": "Motivated by multi-step foresight, progression roadmaps, and long-term control."
+        }
+      },
+      {
+        "id": "mastery-milestone",
+        "category": "mastery",
+        "categoryLabel": { "zh": "精通", "en": "Mastery" },
+        "name": { "zh": "达到里程碑", "en": "Reaching Milestones" },
+        "shortLabel": { "zh": "里程碑", "en": "Milestones" },
+        "questions": ["Q31", "Q32", "Q33"],
+        "formula": "(Q31 + Q32 + Q33) / 3",
+        "description": {
+          "zh": "受明确阶段目标、进度条推进与解锁勋章节点后的成就感驱动。",
+          "en": "Motivated by clear goals, progression bars, and stage-clear rewards."
+        }
+      },
+      {
+        "id": "mastery-skill",
+        "category": "mastery",
+        "categoryLabel": { "zh": "精通", "en": "Mastery" },
+        "name": { "zh": "提高技能", "en": "Skill Improvement" },
+        "shortLabel": { "zh": "提高技能", "en": "Skill" },
+        "questions": ["Q34", "Q35", "Q36"],
+        "formula": "(Q34 + Q35 + Q36) / 3",
+        "description": {
+          "zh": "热爱反复练习与失误复盘，以操作和意识成长而非数值碾压取胜。",
+          "en": "Motivated by deliberate practice, post-fail review, and mechanical growth."
+        }
+      },
+      {
+        "id": "social-competition",
+        "category": "social",
+        "categoryLabel": { "zh": "社交", "en": "Social" },
+        "name": { "zh": "与他人比赛", "en": "Competition" },
+        "shortLabel": { "zh": "竞技比拼", "en": "Compete" },
+        "questions": ["Q37", "Q38", "Q39"],
+        "formula": "(Q37 + Q38 + Q39) / 3",
+        "description": {
+          "zh": "从击败对手、冲击排行榜与和他人比拼战绩中获得强烈斗志。",
+          "en": "Motivated by beating rivals, leaderboard ranks, and direct score comparison."
+        }
+      },
+      {
+        "id": "social-cooperation",
+        "category": "social",
+        "categoryLabel": { "zh": "社交", "en": "Social" },
+        "name": { "zh": "与他人合作", "en": "Cooperation" },
+        "shortLabel": { "zh": "团队合作", "en": "Co-op" },
+        "questions": ["Q40", "Q41", "Q42"],
+        "formula": "(Q40 + Q41 + Q42) / 3",
+        "description": {
+          "zh": "享受团队分工协作、互助社交与和好友共同通关时的归属感。",
+          "en": "Motivated by coordinated teamwork, helping others, and shared social play."
+        }
+      }
+    ]
+  }
+}

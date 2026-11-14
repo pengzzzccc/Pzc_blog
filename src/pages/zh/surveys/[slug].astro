@@ -1,0 +1,9 @@
+---
+import SurveyDetailView from '../../../views/SurveyDetailView.astro';
+import { surveyPaths } from '../../../lib/paths';
+
+export const getStaticPaths = surveyPaths;
+const { survey } = Astro.props;
+---
+
+<SurveyDetailView lang="zh" survey={survey} />

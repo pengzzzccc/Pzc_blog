@@ -6,7 +6,7 @@ import LibraryCover from '../components/LibraryCover.astro';
 import WorkCover from '../components/WorkCover.astro';
 import { profile } from '../data/profile';
 import { localizePath, pick, t, withBase, type Lang } from '../i18n/utils';
-import { getPosts, getWorks } from '../lib/content';
+import { getPosts, getSurveys, getWorks } from '../lib/content';
 import { getLibrary, recentTime } from '../lib/library';
 
 interface Props {
@@ -16,6 +16,8 @@ const { lang } = Astro.props;
 
 const works = await getWorks(lang);
 const posts = await getPosts(lang);
+const surveys = await getSurveys();
+const activeSurveys = surveys.filter((s) => s.data.status === 'active');
 const library = await getLibrary();
 const playing = library.filter((e) => e.status === 'playing').sort((a, b) => recentTime(b) - recentTime(a));
 const featured = works[0];
@@ -78,7 +80,7 @@ const cardClass =
     </div>
 
     <h2 class="sr-only">{t(lang, 'home.entries')}</h2>
-    <div class="mt-12 grid gap-4 md:grid-cols-3">
+    <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <!-- 作品集 -->
       <a href={localizePath('/games/', lang)} class:list={[cardClass, 'overflow-hidden']}>
         <div class="flex aspect-[16/7] items-center justify-center overflow-hidden bg-neutral-100 text-neutral-400 dark:bg-neutral-800 dark:text-neutral-600">
@@ -149,6 +151,28 @@ const cardClass =
           }
         </div>
         <p class="mt-auto pt-4 text-xs text-neutral-600">{t(lang, 'home.library.count', { n: playing.length })}</p>
+      </a>
+
+      <!-- 调研 -->
+      <a href={localizePath('/surveys/', lang)} class:list={[cardClass, 'p-5']}>
+        <div class="flex items-center gap-2 text-accent-600 dark:text-neutral-100">
+          <Icon name="clipboard" />
+          <span class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">{t(lang, 'home.surveys.title')}</span>
+          <Icon name="arrow" class="ml-auto size-5 transition group-hover:translate-x-1" />
+        </div>
+        <p class="mt-2 text-sm text-neutral-700 dark:text-neutral-400">{t(lang, 'home.surveys.desc')}</p>
+        <ul class="mt-4 space-y-3 border-t border-neutral-100 pt-4 dark:border-neutral-800">
+          {surveys.length === 0 && <li class="text-sm text-neutral-500">{t(lang, 'home.surveys.empty')}</li>}
+          {
+            surveys.slice(0, 3).map((survey) => (
+              <li class="flex items-center gap-1.5 text-sm">
+                {survey.data.accessGate?.enabled && <Icon name="lock" class="size-3.5 shrink-0 text-neutral-500" />}
+                <span class="line-clamp-1 font-medium text-neutral-900 dark:text-neutral-200">{pick(survey.data.title, lang)}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mt-auto pt-4 text-xs text-neutral-600">{t(lang, 'home.surveys.count', { n: activeSurveys.length })}</p>
       </a>
     </div>
   </section>

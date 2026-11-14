@@ -11,8 +11,9 @@ interface Props {
 }
 const { lang } = Astro.props;
 const works = await getWorks(lang);
-const gameWorks = works.filter((w) => w.data.category !== 'tool');
+const gameWorks = works.filter((w) => w.data.category === 'game');
 const toolWorks = works.filter((w) => w.data.category === 'tool');
+const researchWorks = works.filter((w) => w.data.category === 'research');
 const engines = [...new Set(works.map((w) => w.data.engine))];
 const filters = [
   { key: 'all', label: t(lang, 'works.all') },
@@ -65,6 +66,17 @@ const filters = [
             <h2 class="mb-5 text-xl font-bold tracking-wider text-neutral-900 dark:text-neutral-50">{t(lang, 'works.section.tool')}</h2>
             <div data-works-grid class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {toolWorks.map((work) => <WorkCard work={work} lang={lang} />)}
+            </div>
+          </section>
+        )
+      }
+
+      {
+        researchWorks.length > 0 && (
+          <section data-works-section>
+            <h2 class="mb-5 text-xl font-bold tracking-wider text-neutral-900 dark:text-neutral-50">{t(lang, 'works.section.research')}</h2>
+            <div data-works-grid class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {researchWorks.map((work) => <WorkCard work={work} lang={lang} />)}
             </div>
           </section>
         )

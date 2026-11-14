@@ -1,7 +1,7 @@
 // 各动态路由的 getStaticPaths，中英文页面共用
 import { site } from '../data/site';
 import type { Lang } from '../i18n/utils';
-import { assertReferences, getPosts, getTags, getWorks, slugOf } from './content';
+import { assertReferences, getPosts, getSurveys, getTags, getWorks, slugOf } from './content';
 
 export async function postPaths(lang: Lang) {
   await assertReferences();
@@ -19,4 +19,9 @@ export async function tagPaths(lang: Lang) {
 
 export async function workPaths(lang: Lang) {
   return (await getWorks(lang)).map((work) => ({ params: { slug: slugOf(work) }, props: { work } }));
+}
+
+export async function surveyPaths() {
+  await assertReferences();
+  return (await getSurveys()).map((survey) => ({ params: { slug: survey.id }, props: { survey } }));
 }

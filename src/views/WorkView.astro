@@ -5,7 +5,7 @@ import DevHint from '../components/DevHint.astro';
 import Gallery from '../components/Gallery.astro';
 import GamePlayer from '../components/GamePlayer.astro';
 import Icon from '../components/Icon.astro';
-import { formatDate, formatMonth, localizePath, otherLang, t, type Lang } from '../i18n/utils';
+import { formatDate, formatMonth, localizePath, otherLang, t, withBase, type Lang } from '../i18n/utils';
 import { getDevlogs, getWorks, slugOf, type Work } from '../lib/content';
 
 interface Props {
@@ -79,12 +79,20 @@ const meta = [
     {
       links.length > 0 && (
         <div class="mt-6 flex flex-wrap gap-2" aria-label={t(lang, 'works.links')}>
-          {links.map((link) => (
-            <a href={link.url} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 dark:bg-neutral-900 text-sm hover:border-neutral-900 hover:text-neutral-900 dark:border-neutral-700 dark:hover:text-neutral-100">
-              {link.label}
-              <Icon name="external" class="size-4" />
-            </a>
-          ))}
+          {links.map((link) => {
+            const internal = link.url.startsWith('/');
+            return (
+              <a
+                href={internal ? withBase(link.url) : link.url}
+                target={internal ? undefined : '_blank'}
+                rel={internal ? undefined : 'noopener'}
+                class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 dark:bg-neutral-900 text-sm hover:border-neutral-900 hover:text-neutral-900 dark:border-neutral-700 dark:hover:text-neutral-100"
+              >
+                {link.label}
+                <Icon name={internal ? 'arrow' : 'external'} class="size-4" />
+              </a>
+            );
+          })}
         </div>
       )
     }

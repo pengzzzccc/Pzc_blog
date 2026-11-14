@@ -26,7 +26,7 @@ const games = defineCollection({
     z.object({
       title: z.string(),
       summary: z.string(),
-      category: z.enum(['game', 'tool']).default('game'),
+      category: z.enum(['game', 'tool', 'research']).default('game'),
       /** 不填时显示作品名标题占位 */
       cover: image().optional(),
       /** 详情页背景/主视觉图（可选） */
@@ -94,4 +94,72 @@ const library = defineCollection({
       }),
 });
 
-export const collections = { blog, games, steam, library };
+// 调研量表：src/content/surveys/<slug>.json
+const bilingualText = z.object({ zh: z.string(), en: z.string() });
+
+const surveys = defineCollection({
+  loader: glob({ pattern: '*.json', base: './src/content/surveys' }),
+  schema: z.object({
+    title: bilingualText,
+    summary: bilingualText,
+    status: z.enum(['active', 'archived', 'upcoming']).default('active'),
+    category: bilingualText,
+    estimatedMinutes: z.number().int().positive().default(5),
+    relatedWork: z.string().optional(),
+    order: z.number().default(0),
+    publishedAt: z.coerce.date(),
+    accessGate: z
+      .object({
+        enabled: z.boolean().default(true),
+        sha256: z.string().regex(/^[a-f0-9]{64}$/),
+        hint: bilingualText.optional(),
+      })
+      .optional(),
+    sections: z.array(
+      z.object({
+        id: z.string(),
+        title: bilingualText,
+        description: bilingualText.optional(),
+        questions: z.array(
+          z.object({
+            id: z.string(),
+            code: z.string(),
+            type: z.enum(['single-choice', 'multi-choice', 'likert-scale']),
+            required: z.boolean().default(true),
+            text: bilingualText,
+            dimension: z.string().optional(),
+            options: z
+              .array(
+                z.object({
+                  value: z.string(),
+                  label: bilingualText,
+                }),
+              )
+              .optional(),
+          }),
+        ),
+      }),
+    ),
+    scoring: z
+      .object({
+        type: z.literal('radar'),
+        scaleMin: z.number().default(1),
+        scaleMax: z.number().default(5),
+        dimensions: z.array(
+          z.object({
+            id: z.string(),
+            category: z.string(),
+            categoryLabel: bilingualText,
+            name: bilingualText,
+            shortLabel: bilingualText,
+            questions: z.array(z.string()),
+            formula: z.string(),
+            description: bilingualText,
+          }),
+        ),
+      })
+      .optional(),
+  }),
+});
+
+export const collections = { blog, games, steam, library, surveys };

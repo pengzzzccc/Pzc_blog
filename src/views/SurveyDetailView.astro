@@ -1,0 +1,369 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { localizePath, otherLang, pick, t, type Lang } from '../i18n/utils';
+import type { Survey } from '../lib/content';
+import type { SurveyRunnerPayload } from '../scripts/survey-runner';
+
+interface Props {
+  lang: Lang;
+  survey: Survey;
+}
+const { lang, survey } = Astro.props;
+const { title, summary, status, category, estimatedMinutes, relatedWork, accessGate, sections, scoring } = survey.data;
+const other = otherLang(lang);
+const alternate = localizePath(`/surveys/${survey.id}/`, other);
+
+const likertOptions = [
+  { value: '1', label: lang === 'zh' ? '1 · 非常不符合' : '1 · Strongly disagree' },
+  { value: '2', label: lang === 'zh' ? '2 · 比较不符合' : '2 · Disagree' },
+  { value: '3', label: lang === 'zh' ? '3 · 一般' : '3 · Neutral' },
+  { value: '4', label: lang === 'zh' ? '4 · 比较符合' : '4 · Agree' },
+  { value: '5', label: lang === 'zh' ? '5 · 非常符合' : '5 · Strongly agree' },
+];
+
+const totalQuestions = sections.reduce((sum, s) => sum + s.questions.length, 0);
+const isGated = Boolean(accessGate?.enabled);
+
+const payload: SurveyRunnerPayload = {
+  slug: survey.id,
+  lang,
+  title: pick(title, lang),
+  accessGate: accessGate?.enabled ? { enabled: true, sha256: accessGate.sha256 } : undefined,
+  questions: sections.flatMap((section) =>
+    section.questions.map((q) => ({
+      id: q.id,
+      code: q.code,
+      sectionId: section.id,
+      sectionTitle: pick(section.title, lang),
+      type: q.type,
+      required: q.required,
+      text: pick(q.text, lang),
+      dimension: q.dimension,
+      options:
+        q.type === 'likert-scale'
+          ? likertOptions
+          : (q.options ?? []).map((o) => ({ value: o.value, label: pick(o.label, lang) })),
+    })),
+  ),
+  scoring: scoring
+    ? {
+        type: scoring.type,
+        scaleMin: scoring.scaleMin,
+        scaleMax: scoring.scaleMax,
+        dimensions: scoring.dimensions.map((d) => ({
+          id: d.id,
+          category: d.category,
+          categoryLabel: pick(d.categoryLabel, lang),
+          name: pick(d.name, lang),
+          shortLabel: pick(d.shortLabel, lang),
+          questions: d.questions,
+          formula: d.formula,
+          description: pick(d.description, lang),
+        })),
+      }
+    : undefined,
+  labels: {
+    progress: t(lang, 'surveys.progress'),
+    missingPrompt: t(lang, 'surveys.missingPrompt'),
+    gateShow: t(lang, 'surveys.gate.show'),
+    gateHide: t(lang, 'surveys.gate.hide'),
+    resultTitle: t(lang, 'surveys.resultTitle'),
+    resultSubtitle: t(lang, 'surveys.resultSubtitle'),
+  },
+};
+---
+
+<BaseLayout lang={lang} title={pick(title, lang)} description={pick(summary, lang)} alternate={alternate}>
+  <div data-survey-root class="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
+    <a href={localizePath('/surveys/', lang)} class="text-sm text-accent-600 hover:underline dark:text-neutral-100">
+      ← {t(lang, 'surveys.back')}
+    </a>
+
+    <header class="mt-4">
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <span class="rounded-md bg-neutral-100 px-2.5 py-0.5 font-medium text-neutral-800 dark:bg-neutral-800 dark:text-neutral-200">
+          {pick(category, lang)}
+        </span>
+        <span class="rounded-md bg-accent-100 px-2.5 py-0.5 font-medium text-accent-800 dark:bg-neutral-800 dark:text-neutral-100">
+          {t(lang, `surveys.status.${status}`)}
+        </span>
+        <span class="text-neutral-600 dark:text-neutral-400">
+          {t(lang, 'surveys.questionsCount', { n: totalQuestions })} · {t(lang, 'surveys.minutes', { n: estimatedMinutes })}
+        </span>
+      </div>
+      <h1 class="mt-3 text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl dark:text-neutral-50">
+        {pick(title, lang)}
+      </h1>
+      <p class="mt-3 text-base leading-relaxed text-neutral-700 dark:text-neutral-400">
+        {pick(summary, lang)}
+      </p>
+      {
+        relatedWork && (
+          <div class="mt-4">
+            <a
+              href={localizePath(`/games/${relatedWork}/`, lang)}
+              class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-sm hover:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:border-neutral-400"
+            >
+              {t(lang, 'surveys.relatedWork')}
+              <Icon name="arrow" class="size-4" />
+            </a>
+          </div>
+        )
+      }
+    </header>
+
+    {
+      isGated && (
+        <section data-survey-gate class="box mt-8 p-6 sm:p-8">
+          <div class="flex items-start gap-3">
+            <span class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900">
+              <Icon name="lock" class="size-5" />
+            </span>
+            <div>
+              <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50">{t(lang, 'surveys.gate.title')}</h2>
+              <p class="mt-1 text-sm text-neutral-700 dark:text-neutral-400">{t(lang, 'surveys.gate.desc')}</p>
+              {accessGate?.hint && (
+                <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">{pick(accessGate.hint, lang)}</p>
+              )}
+            </div>
+          </div>
+
+          <form data-gate-form class="mt-6 flex flex-col gap-3 sm:flex-row">
+            <div class="relative flex-1">
+              <input
+                type="password"
+                data-gate-input
+                required
+                autocomplete="off"
+                placeholder={t(lang, 'surveys.gate.placeholder')}
+                class="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2.5 pr-16 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-100 dark:focus:border-neutral-300"
+              />
+              <button
+                type="button"
+                data-gate-toggle
+                class="absolute right-2 top-1/2 -translate-y-1/2 rounded px-2 py-1 text-xs text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
+              >
+                {t(lang, 'surveys.gate.show')}
+              </button>
+            </div>
+            <button
+              type="submit"
+              class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-neutral-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
+            >
+              {t(lang, 'surveys.gate.submit')}
+              <Icon name="arrow" class="size-4" />
+            </button>
+          </form>
+          <p data-gate-error class="mt-3 hidden text-sm font-medium text-red-600 dark:text-red-400">
+            {t(lang, 'surveys.gate.error')}
+          </p>
+        </section>
+      )
+    }
+
+    <div data-survey-app hidden={isGated}>
+      <!-- 顶部粘性进度条 -->
+      <div class="sticky top-14 z-30 -mx-2 mt-8 rounded-xl border border-neutral-300/80 bg-paper/95 px-4 py-3 backdrop-blur sm:mx-0 dark:border-neutral-800 dark:bg-paper-dark/95">
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-medium text-neutral-700 dark:text-neutral-300">
+          <span data-progress-label>{t(lang, 'surveys.progress', { done: 0, total: totalQuestions })}</span>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              data-fill-demo
+              class="rounded border border-neutral-300 bg-white px-2.5 py-1 text-xs text-neutral-700 hover:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-400"
+            >
+              {t(lang, 'surveys.fillDemo')}
+            </button>
+            <button
+              type="button"
+              data-survey-reset
+              class="rounded border border-neutral-300 bg-white px-2.5 py-1 text-xs text-neutral-700 hover:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-400"
+            >
+              {t(lang, 'surveys.reset')}
+            </button>
+            {
+              isGated && (
+                <button
+                  type="button"
+                  data-survey-lock
+                  class="inline-flex items-center gap-1 rounded border border-neutral-300 bg-white px-2.5 py-1 text-xs text-neutral-700 hover:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-400"
+                >
+                  <Icon name="lock" class="size-3" />
+                  {t(lang, 'surveys.gate.lock')}
+                </button>
+              )
+            }
+          </div>
+        </div>
+        <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-neutral-300/80 dark:bg-neutral-800">
+          <div data-progress-bar class="h-full w-0 rounded-full bg-neutral-900 transition-all duration-200 dark:bg-neutral-100" />
+        </div>
+      </div>
+
+      <form data-survey-form class="mt-8 space-y-10" novalidate>
+        {
+          sections.map((section) => (
+            <section class="space-y-4">
+              <div class="border-b border-neutral-300/80 pb-2 dark:border-neutral-800">
+                <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50">{pick(section.title, lang)}</h2>
+                {section.description && (
+                  <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">{pick(section.description, lang)}</p>
+                )}
+              </div>
+
+              <div class="space-y-4">
+                {section.questions.map((q) => (
+                  <fieldset data-question-id={q.id} class="box p-5 transition">
+                    <legend class="w-full text-base font-medium text-neutral-900 dark:text-neutral-100">
+                      <span class="mr-2 inline-block rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-xs font-semibold text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+                        {q.code}
+                      </span>
+                      {pick(q.text, lang)}
+                      {q.required && (
+                        <span class="ml-1.5 text-xs font-normal text-neutral-500 dark:text-neutral-400">
+                          ({t(lang, 'surveys.required')})
+                        </span>
+                      )}
+                    </legend>
+
+                    {q.type === 'likert-scale' ? (
+                      <div class="mt-4">
+                        <p class="mb-2.5 text-xs text-neutral-500 dark:text-neutral-400">{t(lang, 'surveys.likertHint')}</p>
+                        <div class="grid grid-cols-5 gap-2">
+                          {[1, 2, 3, 4, 5].map((score) => (
+                            <label class="cursor-pointer">
+                              <input type="radio" name={q.id} value={String(score)} class="peer sr-only" />
+                              <span class="flex flex-col items-center justify-center rounded-lg border border-neutral-300 py-2.5 text-center transition peer-checked:border-neutral-900 peer-checked:bg-neutral-900 peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-neutral-900 hover:border-neutral-500 dark:border-neutral-700 dark:peer-checked:border-neutral-100 dark:peer-checked:bg-neutral-100 dark:peer-checked:text-neutral-900 dark:hover:border-neutral-500">
+                                <span class="font-mono text-base font-bold">{score}</span>
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div class="mt-4 grid gap-2 sm:grid-cols-2">
+                        {(q.options ?? []).map((opt) => (
+                          <label class="cursor-pointer">
+                            <input
+                              type={q.type === 'multi-choice' ? 'checkbox' : 'radio'}
+                              name={q.id}
+                              value={opt.value}
+                              class="peer sr-only"
+                            />
+                            <span class="flex items-center gap-2.5 rounded-lg border border-neutral-300 px-3.5 py-2.5 text-sm text-neutral-800 transition peer-checked:border-neutral-900 peer-checked:bg-neutral-900 peer-checked:text-white hover:border-neutral-500 dark:border-neutral-700 dark:text-neutral-200 dark:peer-checked:border-neutral-100 dark:peer-checked:bg-neutral-100 dark:peer-checked:text-neutral-900 dark:hover:border-neutral-500">
+                              <span class="text-sm font-medium">{pick(opt.label, lang)}</span>
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </fieldset>
+                ))}
+              </div>
+            </section>
+          ))
+        }
+
+        <div class="box flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+          <p data-form-error class="hidden text-sm font-medium text-red-600 dark:text-red-400" />
+          <div class="flex flex-wrap items-center gap-3 sm:ml-auto">
+            <button
+              type="submit"
+              class="inline-flex items-center gap-2 rounded-lg bg-neutral-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
+            >
+              {t(lang, 'surveys.submit')}
+              <Icon name="arrow" class="size-4" />
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- 提交后生成的 12 维雷达图与导出区 -->
+      <section data-survey-result hidden class="mt-12 space-y-8 border-t border-neutral-300 pt-10 dark:border-neutral-800">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-50">{t(lang, 'surveys.resultTitle')}</h2>
+            <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">{t(lang, 'surveys.resultSubtitle')}</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button
+              type="button"
+              data-export-csv
+              class="inline-flex items-center gap-1.5 rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
+            >
+              <Icon name="download" class="size-4" />
+              {t(lang, 'surveys.exportCsv')}
+            </button>
+            <button
+              type="button"
+              data-export-png
+              class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-900 hover:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:hover:border-neutral-400"
+            >
+              <Icon name="download" class="size-4" />
+              {t(lang, 'surveys.exportPng')}
+            </button>
+            <button
+              type="button"
+              data-reedit
+              class="rounded-lg border border-neutral-300 bg-white px-3.5 py-2 text-sm text-neutral-700 hover:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-400"
+            >
+              {t(lang, 'surveys.reedit')}
+            </button>
+          </div>
+        </div>
+
+        <div class="grid gap-6 lg:grid-cols-12">
+          <div class="box overflow-x-auto p-4 lg:col-span-7">
+            <div data-radar-mount class="mx-auto max-w-[760px] [&_svg]:h-auto [&_svg]:w-full" />
+          </div>
+
+          <div class="space-y-6 lg:col-span-5">
+            <div class="box p-5">
+              <h3 class="text-base font-bold text-neutral-900 dark:text-neutral-50">{t(lang, 'surveys.topDimensions')}</h3>
+              <div data-top-dimensions class="mt-4 space-y-3" />
+            </div>
+
+            <div class="box p-5">
+              <h3 class="text-base font-bold text-neutral-900 dark:text-neutral-50">{t(lang, 'surveys.categorySummary')}</h3>
+              <div data-category-summary class="mt-4 space-y-3" />
+            </div>
+          </div>
+        </div>
+
+        <div class="box overflow-x-auto p-5">
+          <h3 class="mb-4 text-base font-bold text-neutral-900 dark:text-neutral-50">{t(lang, 'surveys.dimensionTable')}</h3>
+          <table class="w-full min-w-[540px] border-collapse text-left text-sm">
+            <thead>
+              <tr class="text-xs uppercase text-neutral-500 dark:text-neutral-400">
+                <th class="pb-2 pr-3 font-medium">{t(lang, 'surveys.col.cat')}</th>
+                <th class="pb-2 pr-3 font-medium">{t(lang, 'surveys.col.dim')}</th>
+                <th class="pb-2 pr-3 font-medium">{t(lang, 'surveys.col.formula')}</th>
+                <th class="pb-2 pr-3 font-medium">{t(lang, 'surveys.col.raw')}</th>
+                <th class="pb-2 text-right font-medium">{t(lang, 'surveys.col.score')}</th>
+              </tr>
+            </thead>
+            <tbody data-dimension-table-body />
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <script type="application/json" data-survey-payload set:html={JSON.stringify(payload)} />
+  </div>
+</BaseLayout>
+
+<script>
+  import { initSurveyRunner, type SurveyRunnerPayload } from '../scripts/survey-runner';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-survey-root]')) {
+    const jsonEl = root.querySelector<HTMLScriptElement>('script[data-survey-payload]');
+    if (!jsonEl?.textContent) continue;
+    try {
+      const payload = JSON.parse(jsonEl.textContent) as SurveyRunnerPayload;
+      initSurveyRunner(root, payload);
+    } catch (err) {
+      console.error('Failed to initialize survey runner:', err);
+    }
+  }
+</script>
