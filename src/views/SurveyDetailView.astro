@@ -201,67 +201,54 @@ const payload: SurveyRunnerPayload = {
         </div>
       </div>
 
-      <form data-survey-form class="mt-8 space-y-10" novalidate>
+      <form data-survey-form class="mt-8 space-y-4" novalidate>
         {
-          sections.map((section) => (
-            <section class="space-y-4">
-              <div class="border-b border-neutral-300/80 pb-2 dark:border-neutral-800">
-                <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50">{pick(section.title, lang)}</h2>
-                {section.description && (
-                  <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">{pick(section.description, lang)}</p>
+          sections.flatMap((section) => section.questions).map((q) => (
+            <div role="group" aria-labelledby={`q-label-${q.id}`} data-question-id={q.id} class="box p-5 transition">
+              <p id={`q-label-${q.id}`} class="text-base font-medium leading-relaxed text-neutral-900 dark:text-neutral-100">
+                <span class="mr-2 inline-block rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-xs font-semibold text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+                  {q.code}
+                </span>
+                {pick(q.text, lang)}
+                {q.required && (
+                  <span class="ml-1.5 text-xs font-normal text-neutral-500 dark:text-neutral-400">
+                    ({t(lang, 'surveys.required')})
+                  </span>
                 )}
-              </div>
+              </p>
 
-              <div class="space-y-4">
-                {section.questions.map((q) => (
-                  <fieldset data-question-id={q.id} class="box p-5 transition">
-                    <legend class="w-full text-base font-medium text-neutral-900 dark:text-neutral-100">
-                      <span class="mr-2 inline-block rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-xs font-semibold text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
-                        {q.code}
-                      </span>
-                      {pick(q.text, lang)}
-                      {q.required && (
-                        <span class="ml-1.5 text-xs font-normal text-neutral-500 dark:text-neutral-400">
-                          ({t(lang, 'surveys.required')})
+              {q.type === 'likert-scale' ? (
+                <div class="mt-4">
+                  <p class="mb-2.5 text-xs text-neutral-500 dark:text-neutral-400">{t(lang, 'surveys.likertHint')}</p>
+                  <div class="grid grid-cols-5 gap-2">
+                    {[1, 2, 3, 4, 5].map((score) => (
+                      <label class="cursor-pointer">
+                        <input type="radio" name={q.id} value={String(score)} class="peer sr-only" />
+                        <span class="flex flex-col items-center justify-center rounded-lg border border-neutral-300 py-2.5 text-center transition peer-checked:border-neutral-900 peer-checked:bg-neutral-900 peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-neutral-900 hover:border-neutral-500 dark:border-neutral-700 dark:peer-checked:border-neutral-100 dark:peer-checked:bg-neutral-100 dark:peer-checked:text-neutral-900 dark:hover:border-neutral-500">
+                          <span class="font-mono text-base font-bold">{score}</span>
                         </span>
-                      )}
-                    </legend>
-
-                    {q.type === 'likert-scale' ? (
-                      <div class="mt-4">
-                        <p class="mb-2.5 text-xs text-neutral-500 dark:text-neutral-400">{t(lang, 'surveys.likertHint')}</p>
-                        <div class="grid grid-cols-5 gap-2">
-                          {[1, 2, 3, 4, 5].map((score) => (
-                            <label class="cursor-pointer">
-                              <input type="radio" name={q.id} value={String(score)} class="peer sr-only" />
-                              <span class="flex flex-col items-center justify-center rounded-lg border border-neutral-300 py-2.5 text-center transition peer-checked:border-neutral-900 peer-checked:bg-neutral-900 peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-neutral-900 hover:border-neutral-500 dark:border-neutral-700 dark:peer-checked:border-neutral-100 dark:peer-checked:bg-neutral-100 dark:peer-checked:text-neutral-900 dark:hover:border-neutral-500">
-                                <span class="font-mono text-base font-bold">{score}</span>
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      <div class="mt-4 grid gap-2 sm:grid-cols-2">
-                        {(q.options ?? []).map((opt) => (
-                          <label class="cursor-pointer">
-                            <input
-                              type={q.type === 'multi-choice' ? 'checkbox' : 'radio'}
-                              name={q.id}
-                              value={opt.value}
-                              class="peer sr-only"
-                            />
-                            <span class="flex items-center gap-2.5 rounded-lg border border-neutral-300 px-3.5 py-2.5 text-sm text-neutral-800 transition peer-checked:border-neutral-900 peer-checked:bg-neutral-900 peer-checked:text-white hover:border-neutral-500 dark:border-neutral-700 dark:text-neutral-200 dark:peer-checked:border-neutral-100 dark:peer-checked:bg-neutral-100 dark:peer-checked:text-neutral-900 dark:hover:border-neutral-500">
-                              <span class="text-sm font-medium">{pick(opt.label, lang)}</span>
-                            </span>
-                          </label>
-                        ))}
-                      </div>
-                    )}
-                  </fieldset>
-                ))}
-              </div>
-            </section>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div class="mt-4 grid gap-2 sm:grid-cols-2">
+                  {(q.options ?? []).map((opt) => (
+                    <label class="cursor-pointer">
+                      <input
+                        type={q.type === 'multi-choice' ? 'checkbox' : 'radio'}
+                        name={q.id}
+                        value={opt.value}
+                        class="peer sr-only"
+                      />
+                      <span class="flex items-center gap-2.5 rounded-lg border border-neutral-300 px-3.5 py-2.5 text-sm text-neutral-800 transition peer-checked:border-neutral-900 peer-checked:bg-neutral-900 peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-neutral-900 hover:border-neutral-500 dark:border-neutral-700 dark:text-neutral-200 dark:peer-checked:border-neutral-100 dark:peer-checked:bg-neutral-100 dark:peer-checked:text-neutral-900 dark:hover:border-neutral-500">
+                        <span class="text-sm font-medium">{pick(opt.label, lang)}</span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
           ))
         }
 

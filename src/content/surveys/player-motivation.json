@@ -1,7 +1,7 @@
 {
   "title": {
-    "zh": "玩家内驱力评估问卷（42 题 / 12 维度）",
-    "en": "Player Motivation Assessment Scale (42 Items / 12 Dimensions)"
+    "zh": "玩家内驱力评估问卷",
+    "en": "Player Motivation Assessment Scale"
   },
   "summary": {
     "zh": "基于 6 大动机类别与 12 个细分维度的玩家数据采集量表。填写完成后即时生成 12 维内驱力雷达图，并支持一键导出 CSV 与雷达图 PNG。",
